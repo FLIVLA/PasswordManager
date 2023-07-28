@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="CryptoPWMS.Components.HomeScreen"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CryptoPWMS.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="520" d:DesignWidth="800">
+
+    <Grid>
+
+        <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="250"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="55"/>
+                <RowDefinition Height="55"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="title_L" FontWeight="ExtraBold" FontFamily="Consolas" Foreground="{StaticResource txt_gr}" HorizontalAlignment="Center" VerticalAlignment="Top">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Aqua"/>
+                </TextBlock.Effect>
+            </TextBlock>
+
+            <Border Grid.Row="2" CornerRadius="10" Margin="0,8,0,8" BorderThickness="1" BorderBrush="{StaticResource txt_gr}" HorizontalAlignment="Center" Width="330">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Aqua"/>
+                </Border.Effect>
+            </Border>
+
+            <Border Grid.Row="3" CornerRadius="10" Margin="0,8,0,8" BorderThickness="1" BorderBrush="{StaticResource txt_gr}" HorizontalAlignment="Center" Width="330">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Aqua"/>
+                </Border.Effect>
+            </Border>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,0,0,0">
+                <Image Source="pack://application:,,,/img/user.png" Height="25"></Image>
+                <TextBox Grid.Row="2" Width="300" Height="28" FontSize="16" Margin="10,0,0,0" Style="{StaticResource transparent_txbx}"></TextBox>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,0,0,0">
+                <Image Source="pack://application:,,,/img/key.png" Height="25"></Image>
+                <PasswordBox Grid.Row="3" Width="300" Height="28" Margin="10,0,0,0" FontSize="16" Style="{StaticResource transparent_pwbx}"></PasswordBox>
+            </StackPanel>
+
+            <Button x:Name="btn_Login" Grid.Row="4" Height="40" Width="330" Foreground="Black" Background="{StaticResource txt_gr}" Opacity="0.7" Style="{StaticResource LoginBtn}" Content="Login" FontFamily="Consolas" FontWeight="ExtraBold" FontSize="18" Click="btn_Login_Click"></Button>
+
+            <Button x:Name="btn_navToSignup" Grid.Row="5" Content="Create Account" FontFamily="Consolas" Style="{StaticResource TextBtn}" Foreground="{StaticResource txt_gr}" Click="btn_navToSignup_Click"></Button>
+            
+        </Grid>
+
+    </Grid>
+</UserControl>
