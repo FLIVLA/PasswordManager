@@ -12,7 +12,7 @@ namespace CryptoPWMS.Models
         private const string UppercaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private const string LowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
         private const string Digits = "0123456789";
-        private const string Symbols = "!@#$%^&*()-_=+[]{}|;:,.<>?";
+        private const string Symbols = "!@#$%^&*()_=+[]{}|;:,.<>?";
 
         private int _length;
         private bool _useCaps;
@@ -54,7 +54,7 @@ namespace CryptoPWMS.Models
 
         public PasswordGenerator() 
         {
-            
+            _length = 20;
         }
 
         public string Generate()
@@ -71,7 +71,7 @@ namespace CryptoPWMS.Models
             if (_useSymbols)
                 characterSet += Symbols;
 
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
                 byte[] randomBytes = new byte[_length];
                 rng.GetBytes(randomBytes);

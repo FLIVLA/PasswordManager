@@ -9,9 +9,13 @@
 
   <ItemGroup>
     <None Remove="img\add.png" />
+    <None Remove="img\add_solid.png" />
     <None Remove="img\app.png" />
+    <None Remove="img\bin.png" />
     <None Remove="img\copy.png" />
     <None Remove="img\db.png" />
+    <None Remove="img\edit.png" />
+    <None Remove="img\folder.png" />
     <None Remove="img\key.png" />
     <None Remove="img\pwlck.png" />
     <None Remove="img\refresh.png" />
@@ -20,6 +24,8 @@
     <None Remove="img\settings.png" />
     <None Remove="img\shield.png" />
     <None Remove="img\signout.png" />
+    <None Remove="img\stopwatch.png" />
+    <None Remove="img\unlock.png" />
     <None Remove="img\user.png" />
   </ItemGroup>
 
@@ -27,13 +33,25 @@
     <Resource Include="img\add.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="img\add_solid.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="img\app.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\bin.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\copy.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\db.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\edit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\folder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\key.png">
@@ -58,6 +76,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\signout.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\stopwatch.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\unlock.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\user.png">

@@ -13,9 +13,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
+        <!--#region SIDE MENU-->
+        
         <Grid x:Name="menugrid" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="60"/>
+                <RowDefinition Height="20"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
@@ -27,72 +29,89 @@
 
             <Grid Grid.RowSpan="123" Background="#FF2E2E2E" Opacity="0.5"></Grid>
 
-            <Grid Grid.Row="1"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed"></Grid>
-            <Grid Grid.Row="2"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed"></Grid>
-            <Grid Grid.Row="3"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed"></Grid>
-            <Grid Grid.Row="5"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed"></Grid>
+            <Border x:Name="selectionIndicator_PWLIB" Grid.Row="1"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed" Margin="5,0,5,0" CornerRadius="5"></Border>
+            <Border x:Name="selectionIndicator_PWADD" Grid.Row="2"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed" Margin="5,0,5,0" CornerRadius="5"></Border>
+            <Border x:Name="selectionIndicator_PWG" Grid.Row="3"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed" Margin="5,0,5,0" CornerRadius="5"></Border>
+            <Border x:Name="selectionIndicator_Settings" Grid.Row="4"  Background="#FF1A1A1A" Opacity="0.5" Visibility="Collapsed" Margin="5,0,5,0" CornerRadius="5"></Border>
 
-            <Button x:Name="btn_menu_passwordslib" Grid.Row="1" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="{StaticResource txt_gr}" HorizontalContentAlignment="Left" Click="btn_menu_passwordslib_Click">
+            <Button x:Name="btn_menu_passwordslib" Grid.Row="1" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="DarkGray" HorizontalContentAlignment="Left" Click="btn_menu_passwordslib_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0"> 
                     <Image Source="pack://application:,,,/img/db.png" Height="23"></Image>
-                    <TextBlock Text="Passwords" Margin="15,4,0,0" FontSize="14" FontFamily="consolas"></TextBlock>
+                    <TextBlock Text="Passwords" Margin="15,4,0,0" FontSize="14"></TextBlock>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="btn_menu_addpass" Grid.Row="2" Style="{StaticResource menu_btn}" Margin="2,1,5,1" Foreground="{StaticResource txt_gr}" HorizontalContentAlignment="Left" Click="btn_menu_addpass_Click">
+            <Button x:Name="btn_menu_addpass" Grid.Row="2" Style="{StaticResource menu_btn}" Margin="2,1,5,1" Foreground="DarkGray" HorizontalContentAlignment="Left" Click="btn_menu_addpass_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                     <Image Source="pack://application:,,,/img/add.png" Height="30"></Image>
-                    <TextBlock Text="Passwords" Margin="11,7,0,0" FontSize="14" FontFamily="consolas"></TextBlock>
+                    <TextBlock Text="Passwords" Margin="11,7,0,0" FontSize="14"></TextBlock>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="btn_menu_generatepass" Grid.Row="3" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="{StaticResource txt_gr}" HorizontalContentAlignment="Left" Click="btn_menu_generatepass_Click">
+            <Button x:Name="btn_menu_generatepass" Grid.Row="3" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="DarkGray" HorizontalContentAlignment="Left" Click="btn_menu_generatepass_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                     <Image Source="pack://application:,,,/img/rnd.png" Height="23"></Image>
-                    <TextBlock Text="Password Generator" Margin="15,4,0,0" FontSize="14" FontFamily="consolas"></TextBlock>
+                    <TextBlock Text="Password Generator" Margin="15,4,0,0" FontSize="14"></TextBlock>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="btn_menu_settings" Grid.Row="4" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="{StaticResource txt_gr}" HorizontalContentAlignment="Left" Click="btn_menu_settings_Click">
+            <Button x:Name="btn_menu_settings" Grid.Row="4" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="DarkGray" HorizontalContentAlignment="Left" Click="btn_menu_settings_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                     <Image Source="pack://application:,,,/img/settings.png" Height="23"></Image>
-                    <TextBlock Text="Settings" Margin="15,4,0,0" FontSize="14" FontFamily="consolas"></TextBlock>
+                    <TextBlock Text="Settings" Margin="15,4,0,0" FontSize="14"></TextBlock>
                 </StackPanel>
             </Button>
 
-            <Button x:Name="btn_menu_signout" Grid.Row="6" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="{StaticResource txt_gr}" HorizontalContentAlignment="Left" Click="btn_menu_signout_Click">
+            <Button x:Name="btn_menu_signout" Grid.Row="6" Style="{StaticResource menu_btn}" Margin="5,1,5,1" Foreground="DarkGray" HorizontalContentAlignment="Left" Click="btn_menu_signout_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                     <Image Source="pack://application:,,,/img/signout.png" Height="23"></Image>
-                    <TextBlock Text="Sign out" Margin="15,4,0,0" FontSize="14" FontFamily="consolas"></TextBlock>
+                    <TextBlock Text="Sign out" Margin="15,4,0,0" FontSize="14"></TextBlock>
                 </StackPanel>
             </Button>
 
         </Grid>
+        <GridSplitter Grid.Column="0" Background="Transparent" Width="2" Opacity="0.4"/>
 
-        <GridSplitter Grid.Column="0" Background="Transparent" Width="2" Opacity="0.4">
-            
-        </GridSplitter>
+        <!--#endregion SIDE MENU-->
 
-        <Grid x:Name="rndpw_grid" Grid.Column="1" >
+        <!--#region PASSWEORD LIBRARY-->
+        
+        <Grid x:Name="PasswordLibrary_grid" Grid.Column="1" Visibility="Visible">
+            <ScrollViewer Margin="20,5,5,20">
+                <StackPanel x:Name="grp_stack" Orientation="Vertical" Grid.Row="1">
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+        
+        <!--#endregion-->
+        
+        <!--#region ADD PASSWORD-->
+
+        <Grid x:Name="AddPassword_grid" Grid.Column="1" Visibility="Collapsed">
+
+        </Grid>
+        
+        <!--#endregion-->
+
+        <!--#region PASSWORD GENERATOR-->
+
+        <Grid x:Name="rndpw_grid" Grid.Column="1" Visibility="Collapsed">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="80"/>
+                <RowDefinition Height="10"/>
                 <RowDefinition Height="130"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Background="#FF2E2E2E" Opacity="0.5" Margin="2,0,0,0"></Grid>
-            <Grid Grid.Row="2" Grid.RowSpan="4" Background="#FF2E2E2E" Opacity="0.5" Margin="2,0,0,0"></Grid>
+            <!--<Grid Grid.Row="0" Background="#FF2E2E2E" Opacity="0.5" Margin="2,0,0,0"></Grid>-->
+            <!--<Grid Grid.Row="2" Grid.RowSpan="4" Background="#FF2E2E2E" Opacity="0.5" Margin="2,0,0,0"></Grid>-->
 
-            <StackPanel Orientation="Horizontal" Margin="25,0,0,0">
-                <!--<Image Source="pack://application:,,,/img/rnd.png" Height="30"></Image>-->
-                <TextBlock x:Name="pwg_tag" FontSize="30" FontWeight="Light" Foreground="{StaticResource txt_gr}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0">
-                    <TextBlock.Effect>
-                        <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="Aqua"/>
-                    </TextBlock.Effect>
+            <!--<StackPanel Orientation="Horizontal" Margin="25,0,0,0">
+                <TextBlock x:Name="pwg_tag" FontSize="16" FontWeight="Light" Foreground="{StaticResource txt_gr}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0">
                 Password Generator
                 </TextBlock>
-            </StackPanel>
+            </StackPanel>-->
            
 
             <StackPanel Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,25,0,0" Orientation="Horizontal">
@@ -136,34 +155,47 @@
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="350"/>
+                        <ColumnDefinition Width="280"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Foreground="{StaticResource txt_gr}" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Password Length</TextBlock>
-                    <Slider x:Name="rndpwLength_slider" Minimum="5" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,50,0" Style="{StaticResource Horizontal_Slider}" ValueChanged="rndpwLength_slider_ValueChanged"/>
+                    <Separator VerticalAlignment="Top" Background="DarkGray" Opacity="0.15" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
+
+
+                    <TextBlock Foreground="DarkGray" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Password Length</TextBlock>
+                    <Slider x:Name="rndpwLength_slider" Minimum="5" Maximum="50" Value="20" TickFrequency="1" IsSnapToTickEnabled="True" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="0,0,50,0" Style="{StaticResource Horizontal_Slider}" ValueChanged="rndpwLength_slider_ValueChanged"/>
                     <TextBlock x:Name="txt_sliderval" Foreground="{StaticResource txt_gr}" Grid.Column="1" FontFamily="Consolas" FontSize="18" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">0</TextBlock>
-                    <Separator VerticalAlignment="Bottom" Background="#FF1A1A1A" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
+                    <Separator VerticalAlignment="Bottom" Background="DarkGray" Opacity="0.15" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
                     
-                    <TextBlock Foreground="{StaticResource txt_gr}" Grid.Row="1" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Include Capital Letters (A-Z)</TextBlock>
+                    <TextBlock Foreground="DarkGray" Grid.Row="1" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Include Capital Letters (A-Z)</TextBlock>
                     <ToggleButton x:Name="toggle_capital" Grid.Column="1" Grid.Row="1" Height="25" Width="50" HorizontalAlignment="Right" Checked="toggle_capital_Checked" Unchecked="toggle_capital_Unchecked"></ToggleButton>
-                    <Separator VerticalAlignment="Bottom" Background="#FF1A1A1A" Grid.Row="1" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
-                    
-                    <TextBlock Foreground="{StaticResource txt_gr}" Grid.Row="2" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Use Digits (0-9)</TextBlock>
+                    <Separator VerticalAlignment="Bottom" Background="DarkGray" Opacity="0.15" Grid.Row="1" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
+
+                    <TextBlock Foreground="DarkGray" Grid.Row="2" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Use Digits (0-9)</TextBlock>
                     <ToggleButton x:Name="toggle_usedigits" Grid.Column="1" Grid.Row="2" Height="25" Width="50" HorizontalAlignment="Right" Checked="toggle_usedigits_Checked" Unchecked="toggle_usedigits_Unchecked"></ToggleButton>
-                    <Separator VerticalAlignment="Bottom" Background="#FF1A1A1A" Grid.Row="2" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
+                    <Separator VerticalAlignment="Bottom" Background="DarkGray" Opacity="0.15" Grid.Row="2" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
 
-                    <TextBlock Foreground="{StaticResource txt_gr}" Grid.Row="3" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Use Symbols (@!$%*)</TextBlock>
+                    <TextBlock Foreground="DarkGray" Grid.Row="3" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Use Symbols (@!$%*)</TextBlock>
                     <ToggleButton x:Name="toggle_usesymbols" Grid.Column="1" Grid.Row="3" Height="25" Width="50" HorizontalAlignment="Right" Checked="toggle_usesymbols_Checked" Unchecked="toggle_usesymbols_Unchecked"></ToggleButton>
-                    <Separator VerticalAlignment="Bottom" Background="#FF1A1A1A" Grid.Row="3" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
+                    <Separator VerticalAlignment="Bottom" Background="DarkGray" Opacity="0.15" Grid.Row="3" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
 
-                    <TextBlock Foreground="{StaticResource txt_gr}" Grid.Row="4" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Group Characters</TextBlock>
+                    <TextBlock Foreground="DarkGray" Grid.Row="4" FontSize="14" VerticalAlignment="Center" Margin="20,0,0,0">Group Characters</TextBlock>
                     <ToggleButton x:Name="toggle_grpchars" Grid.Column="1" Grid.Row="4" Height="25" Width="50" HorizontalAlignment="Right" Checked="toggle_grpchars_Checked" Unchecked="toggle_grpchars_Unchecked"></ToggleButton>
-                    <Separator VerticalAlignment="Bottom" Background="#FF1A1A1A" Grid.Row="4" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
+                    <Separator VerticalAlignment="Bottom" Background="DarkGray" Opacity="0.15" Grid.Row="4" Grid.ColumnSpan="123" Margin="0,0,-60,0"></Separator>
 
                 </Grid>
             </ScrollViewer>
             
             </Grid>
+        
+        <!--#endregion-->
+        
+        <!--#region SETTINGS-->
+
+        <Grid x:Name="Settings_grid" Grid.Column="1" Visibility="Collapsed">
+            
+        </Grid>
+        
+        <!--#endregion-->
 
     </Grid>
 </UserControl>

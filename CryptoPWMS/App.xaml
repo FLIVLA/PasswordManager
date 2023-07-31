@@ -146,7 +146,7 @@
                         <Viewbox>
                             <Border x:Name="Border" CornerRadius="10"
                             Background="#FF1A1A1A"
-                            Width="40" Height="20">
+                            Width="40" Height="20" BorderThickness="0.9" BorderBrush="#FF383838">
                                 <Ellipse x:Name="Ellipse" Fill="#FF383838" Stretch="Uniform"
                                  Margin="2 1 2 1"
                                  Stroke="Gray" StrokeThickness="0.2"

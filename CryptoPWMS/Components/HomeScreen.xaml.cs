@@ -22,6 +22,12 @@ namespace CryptoPWMS.Components
     /// </summary>
     public partial class HomeScreen : UserControl
     {
+        private FrameworkElement _main;
+        public FrameworkElement Main
+        {
+            get { return _main; }
+            set { _main = value; }
+        }
 
         public HomeScreen()
         {
@@ -31,7 +37,7 @@ namespace CryptoPWMS.Components
 
         private void btn_Login_Click(object sender, RoutedEventArgs e)
         {
-
+            UI_Transitions.FadeOut(this, _main);
         }
 
         private void btn_navToSignup_Click(object sender, RoutedEventArgs e)

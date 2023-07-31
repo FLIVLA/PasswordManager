@@ -13,6 +13,5 @@ namespace CryptoPWMS
     /// </summary>
     public partial class App : Application
     {
-        public static MainWindow MainWindow { get; set; } 
     }
 }

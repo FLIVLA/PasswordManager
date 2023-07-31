@@ -13,7 +13,7 @@
         Background="Transparent"
         >
     <Grid>
-        <Grid Background="#FF1A1A1A" Opacity="0.9"></Grid>
+        <Grid Background="#FF1A1A1A" Opacity="0.95"></Grid>
 
         <Grid>
             <Grid.RowDefinitions>
@@ -55,8 +55,8 @@
             </Grid>
 
             <Grid Grid.Row="1">
-                <uc:HomeScreen IsEnabled="False" Visibility="Collapsed"></uc:HomeScreen>
-                <uc:MainUI IsEnabled="True" Visibility="Visible"></uc:MainUI>
+                <uc:HomeScreen x:Name="Home" IsEnabled="True" Visibility="Visible"></uc:HomeScreen>
+                <uc:MainUI x:Name="Main_ui"  IsEnabled="False" Visibility="Collapsed"></uc:MainUI>
 
             </Grid>
 
