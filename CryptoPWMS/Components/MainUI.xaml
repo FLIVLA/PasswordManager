@@ -78,7 +78,7 @@
         
         <Grid x:Name="PasswordLibrary_grid" Grid.Column="1" Visibility="Visible">
             <ScrollViewer Margin="20,5,5,20">
-                <StackPanel x:Name="grp_stack" Orientation="Vertical" Grid.Row="1">
+                <StackPanel  x:Name="grp_stack" Orientation="Vertical" Grid.Row="1">
 
                 </StackPanel>
             </ScrollViewer>
