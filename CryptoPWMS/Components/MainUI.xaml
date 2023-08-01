@@ -44,7 +44,7 @@
             <Button x:Name="btn_menu_addpass" Grid.Row="2" Style="{StaticResource menu_btn}" Margin="2,1,5,1" Foreground="DarkGray" HorizontalContentAlignment="Left" Click="btn_menu_addpass_Click">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0">
                     <Image Source="pack://application:,,,/img/add.png" Height="30"></Image>
-                    <TextBlock Text="Passwords" Margin="11,7,0,0" FontSize="14"></TextBlock>
+                    <TextBlock Text="New" Margin="11,7,0,0" FontSize="14"></TextBlock>
                 </StackPanel>
             </Button>
 
