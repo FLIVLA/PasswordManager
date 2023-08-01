@@ -13,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace CryptoPWMS.Components
 {
@@ -21,14 +22,24 @@ namespace CryptoPWMS.Components
     /// </summary>
     public partial class PasswordContainer : UserControl
     {
-        private PasswordGroup GRP { get; set; }
+        private PasswordGroup grp;
+        private DispatcherTimer timer;
+        private TimeSpan rt;
+
         public bool IsExpanded { get; set; }
 
-        public PasswordContainer(PasswordGroup gRP)
+
+        public PasswordContainer(PasswordGroup grp)
         {
-            GRP = gRP;
+            this.grp = grp;
             InitializeComponent();
+
+            rt = TimeSpan.FromSeconds(10);
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(10); // Update the timer every 10 milliseconds
+            timer.Tick += Timer_Tick;
         }
+
 
         public void BtnExpandCollapse_Click(object sender, RoutedEventArgs e)
         {
@@ -37,20 +48,38 @@ namespace CryptoPWMS.Components
                 IsExpanded = false;
                 var sb = (Storyboard)this.Resources["sb_collapse"];
                 sb.Begin();
-                GRP.SetVertConnector_Y2(PasswordGroup.VertY2.collapse);
             }
             else
             {
                 IsExpanded = true;
-                GRP.SetVertConnector_Y2(PasswordGroup.VertY2.expand);
                 var sb = (Storyboard)this.Resources["sb_expand"];
                 sb.Begin();
             }
         }
 
+        private void btn_unlockPass_Click(object sender, RoutedEventArgs e)
+        {
+            rt = TimeSpan.FromSeconds(10);
+            timer.Start();
+        }
+
+
+
         public PasswordGroup GetGrp()
         {
-            return GRP;
+            return grp;
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            rt = rt.Subtract(timer.Interval);
+
+            if (rt <= TimeSpan.Zero)
+            {
+                timer.Stop();
+                rt = TimeSpan.Zero;
+            }
+            txt_stopwatch.Text = $"{rt:ss\\:ff}";
         }
     }
 }

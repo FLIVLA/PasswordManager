@@ -41,34 +41,6 @@ namespace CryptoPWMS.Components
         public void AddPw(string s)
         {
             pw_stack.Children.Add(new PasswordContainer(this));
-            vert_connector.Y2 = (pw_stack.Children.Count * 35) - 25;
-        }
-
-        public void SetVertConnector_Y2(VertY2 vy2)
-        {
-            if (vy2 == VertY2.expand)
-                ExpandAnimation();
-            else CollapseAnimation();
-        }
-
-        public void ExpandAnimation()
-        {
-            DoubleAnimation animation = new DoubleAnimation();
-
-            animation.From = vert_connector.Y2;
-            animation.To = vert_connector.Y2 + 100;
-            animation.Duration = TimeSpan.FromSeconds(0.1);
-            vert_connector.BeginAnimation(Line.Y2Property, animation);
-        }
-
-        public void CollapseAnimation()
-        {
-            DoubleAnimation animation = new DoubleAnimation();
-
-            animation.From = vert_connector.Y2;
-            animation.To = vert_connector.Y2 - 100;
-            animation.Duration = TimeSpan.FromSeconds(0.2);
-            vert_connector.BeginAnimation(Line.Y2Property, animation);
         }
     }
 }
