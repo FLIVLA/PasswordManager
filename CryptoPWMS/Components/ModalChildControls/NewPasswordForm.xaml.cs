@@ -11,8 +11,8 @@ namespace CryptoPWMS.Components.ModalChildControls
     /// </summary>
     public partial class NewPasswordForm : UserControl
     {
-        public Window Parent { get; set; }
-        private Dictionary<string, int> GrpMap { get; set; }
+        public Window Parent { get; set; }                          // To enable the child of closing the parent modal hosting this.
+        private Dictionary<string, int> GrpMap { get; set; }        // Stored key-value pairs (name, ID) of Password groups of the database.
 
         public NewPasswordForm()
         {
@@ -20,7 +20,7 @@ namespace CryptoPWMS.Components.ModalChildControls
             var grps = Passwords.Get_PWGroups();                    // Get password groups from database.
             GrpMap = grps.ToDictionary(x => x.Name, x => x.Id);     // Create dictionary of Groups (name, id).
             
-            for (int i = 0; i < grps.Count; i++)                    // Add combobox items from group list.
+            for (int i = 0; i < grps.Count; i++)                    // Add combobox-items from group list (group names).
             {
                 cbo_grp.Items.Add(grps[i].Name);
             }
@@ -34,18 +34,19 @@ namespace CryptoPWMS.Components.ModalChildControls
         /// <param name="e"></param>
         private void btn_create_Click(object sender, RoutedEventArgs e)
         {
-            var grp = cbo_grp.SelectedItem.ToString();
-            var grpId = GrpMap[grp];
-            var platform = txt_platform.Text;
-            var url = txt_URL.Text;
-            var un = txt_username.Text;
-            var pw = pwbx_password.Password;                            
+            //------------- STORE INPUT --------------
+            var grp = cbo_grp.SelectedItem.ToString();                      // Selected password group.
+            var grpId = GrpMap[grp];                                        // Get the ID of the selected pw-group from map.
+            var platform = txt_platform.Text;                               // platform name.
+            var url = txt_URL.Text;                                         // platform URL.
+            var un = txt_username.Text;                                     // Entered username.
+            var pw = pwbx_password.Password;                                // Entered password.
 
             if (string.IsNullOrWhiteSpace(txt_URL.Text)) url = "";          // Set to empty string in case of whitespace chars in input field.
 
             Passwords.Insert(App.Cur_Uid, grpId, platform, url, un, pw);    // Insert new password record in the database.
             App.MainUI.UpdatePasswordGroup(grpId);                          // Update the group container in the MainUI.
-            App.MainWin.blurGrid.Visibility = Visibility.Collapsed;
+            App.MainWin.blurGrid.Visibility = Visibility.Collapsed;         
             Parent.Close();                                                 // Close the parent Modal.
         }
 
@@ -58,15 +59,15 @@ namespace CryptoPWMS.Components.ModalChildControls
         /// <param name="e"></param>
         private void cbo_grp_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (IsValidEntry())
+            if (IsValidEntry())                     // IF VALID INPUT:
             {
-                btn_create.IsEnabled = true;
-                btn_create.Opacity = 1;
+                btn_create.IsEnabled = true;        // Enable create-button.
+                btn_create.Opacity = 1;             // set Opacity to indicate button availability.
             }
-            else
+            else                                    // IF INPUT IS INVALID:
             {
-                btn_create.IsEnabled = false;
-                btn_create.Opacity = 0.5;
+                btn_create.IsEnabled = false;       // Disable create-button.
+                btn_create.Opacity = 0.5;           // Set Opacity property of create-button to indicate unavailable state.
             }
         }
 
@@ -79,15 +80,15 @@ namespace CryptoPWMS.Components.ModalChildControls
         /// <param name="e"></param>
         private void ContentChanged(object sender, RoutedEventArgs e)
         {
-            if (IsValidEntry())
+            if (IsValidEntry())                     // IF VALID INPUT:
             {
-                btn_create.IsEnabled = true;
-                btn_create.Opacity = 1;
+                btn_create.IsEnabled = true;        // Enable create-button.
+                btn_create.Opacity = 1;             // set Opacity to indicate button availability.
             }
-            else
-            {
-                btn_create.IsEnabled = false;
-                btn_create.Opacity = 0.5;
+            else                                    // IF INPUT IS INVALID:
+            {                                           
+                btn_create.IsEnabled = false;       // Disable create-button.
+                btn_create.Opacity = 0.5;           // Set Opacity property of create-button to indicate unavailable state.
             }
         }
 
@@ -100,13 +101,13 @@ namespace CryptoPWMS.Components.ModalChildControls
         /// <returns>Boolean value of </returns>
         private bool IsValidEntry()
         {
-            bool selectedGrp = cbo_grp.SelectedItem != null;
-            bool enteredUn = !string.IsNullOrWhiteSpace(txt_username.Text);
-            bool enteredpw = !string.IsNullOrEmpty(pwbx_password.Password);
-            bool reEnteredpw = !string.IsNullOrEmpty(pwbx_password_Re_enter.Password);
-            bool pwsMatch = pwbx_password.Password == pwbx_password_Re_enter.Password;
+            bool selectedGrp = cbo_grp.SelectedItem != null;                            // User have selected password group.
+            bool enteredUn = !string.IsNullOrWhiteSpace(txt_username.Text);             // User have entered a username.
+            bool enteredpw = !string.IsNullOrEmpty(pwbx_password.Password);             // User have entered a password.
+            bool reEnteredpw = !string.IsNullOrEmpty(pwbx_password_Re_enter.Password);  // User have re-entered the password.
+            bool pwsMatch = pwbx_password.Password == pwbx_password_Re_enter.Password;  // User have entered two matching passwords.
 
-            return selectedGrp && enteredUn && enteredpw && reEnteredpw && pwsMatch;
+            return selectedGrp && enteredUn && enteredpw && reEnteredpw && pwsMatch;    // Return values of all conditions combined.
         }
     }
 }

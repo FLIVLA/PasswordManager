@@ -16,16 +16,20 @@ namespace CryptoPWMS.IO
         /// <summary>
         /// Returns connection string of the database in the current executing directory.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The connection string of the database.</returns>
         private static string ConnectionString()
         {
             return $"Data Source={AppDomain.CurrentDomain.BaseDirectory}\\Database\\pwdb.db;";
         }
 
+        #region ============================ GET ============================
+
         /// <summary>
-        /// 
+        /// Gets all password groups from the database. These are 
+        /// non-user-specific records, and will return the same default 
+        /// groups regardless of the active user ID.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>All password groups</returns>
         public static List<PasswordGroup> Get_PWGroups()
         {
             using (IDbConnection con = new SQLiteConnection(ConnectionString()))
@@ -36,10 +40,11 @@ namespace CryptoPWMS.IO
         }
 
         /// <summary>
-        /// 
+        /// Gets all password records matching the current active user ID,
+        /// from the database.
         /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
+        /// <param name="uid">Current active user ID.</param>
+        /// <returns>All Password records matching the user ID</returns>
         public static List<PasswordItem> GetByUserId(int uid)
         {
             var pws = new List<PasswordItem>();
@@ -67,11 +72,11 @@ namespace CryptoPWMS.IO
         /// <returns></returns>
         public static List<PasswordItem> GetByGroup(int grpid)
         {
-            var pws = new List<PasswordItem>();
-            var con = new SQLiteConnection(ConnectionString());
+            var pws = new List<PasswordItem>();                         // Initialize new empty list of type PasswordItem
+            var con = new SQLiteConnection(ConnectionString());         
             try
             {
-                con.Open();
+                con.Open();                                             // Open the database connection.
                 var query = "SELECT * FROM Password " +
                             "WHERE User_Id=@User_Id AND Grp_Id=@Grp_Id";
 
@@ -80,9 +85,13 @@ namespace CryptoPWMS.IO
                 }).ToList();
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }
+            finally { con.Close(); }                                    // Ensures that database connection is closed.
             return pws;
         }
+
+        #endregion
+
+        #region ========================== INSERT ==========================
 
         /// <summary>
         /// Inserts new password record in the database.
@@ -122,13 +131,20 @@ namespace CryptoPWMS.IO
                 cmd.ExecuteNonQuery();                                  
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }
+            finally { con.Close(); }                                        // Ensures that database connection is closed.                                                               
         }
 
+        #endregion
+
+        #region ======================== UPDATE/DELETE ========================
+
         /// <summary>
-        /// 
+        /// Updates a record with primary key ID matching the ID of the
+        /// PasswordItem instance passed in the argument. The field values
+        /// of the Password item instance should be updated before calling
+        /// this method, otherwise changes wont be committed to the database.
         /// </summary>
-        /// <param name="p"></param>
+        /// <param name="p">Updated instance to be committed to database.</param>
         public static void Update(PasswordItem p)
         {
             var con = new SQLiteConnection(ConnectionString());
@@ -151,16 +167,18 @@ namespace CryptoPWMS.IO
             try
             {
                 con.Open();
-                var cmd = new SQLiteCommand(con)
+                var cmd = new SQLiteCommand(con)                                                // initialize new SQLiteCommand with the SQLiteConnection
                 {
-                    CommandText = "DELETE FROM Password WHERE Id=@Id AND User_Id=@User_Id"
+                    CommandText = "DELETE FROM Password WHERE Id=@Id AND User_Id=@User_Id"      // Set commandstring with parameters.
                 };
-                cmd.Parameters.AddWithValue("@Id", p.Id);
+                cmd.Parameters.AddWithValue("@Id", p.Id);                                       //
                 cmd.Parameters.AddWithValue("@User_Id", App.Cur_Uid);
                 cmd.ExecuteNonQuery();
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }
+            catch (Exception ex) { MessageBox.Show(ex.Message); }                               // Shows exception message in msgbx.
+            finally { con.Close(); }                                                            // Ensures that database connection is closed.
         }
+
+        #endregion
     }
 }
