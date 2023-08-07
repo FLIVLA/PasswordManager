@@ -4,12 +4,26 @@ using System.Security.Cryptography;
 
 namespace CryptoPWMS.Security
 {
+    /*
+     *   _________                        __          
+     *   \_   ___ \_______ ___.__._______/  |_  ____  
+     *   /    \  \/\_  __ <   |  |\____ \   __\/  _ \ 
+     *   \     \____|  | \/\___  ||  |_> >  | (  <_> )
+     *    \______  /|__|   / ____||   __/|__|  \____/ 
+     *           \/        \/     |__|                
+     */
+
+    /// <summary>
+    /// Crypto is a static class, and servers as a helper class for all encryption
+    /// related operations in the password manager. Has necessary methods to
+    /// perform key and salt generation, AES and RSA encryption and decryption.
+    /// </summary>
     internal static class Crypto
     {
         /// <summary>
-        /// 
+        /// Generates random cryptographic key using the Advanced Encryption Standard (AES) algorithm.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The generated cryptographic as byte array.</returns>
         public static byte[] GenerateKey()
         {
             using (var aes = Aes.Create())
@@ -20,15 +34,15 @@ namespace CryptoPWMS.Security
         }
 
         /// <summary>
-        /// 
+        /// Generates a random salt for cryptographic operations.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Returns the generated salt as byte array.</returns>
         public static byte[] GenerateSalt() 
         {
-            byte[] salt = new byte[16];
-            using (var r = RandomNumberGenerator.Create())
+            byte[] salt = new byte[16];                         // create new array to store the generated salt.
+            using (var r = RandomNumberGenerator.Create())      // using instance of class RandomNumberGenerator to generate random bytes.
             {
-                r.GetBytes(salt);
+                r.GetBytes(salt);                               // Fill the salt array with random bytes.
             }
             return salt;
         }
@@ -40,7 +54,7 @@ namespace CryptoPWMS.Security
         /// <param name="key"></param>
         /// <param name="salt"></param>
         /// <returns></returns>
-        public static byte[] Encrypt(byte[] data, byte[] key, byte[] salt)
+        public static byte[] Encrypt_AES(byte[] data, byte[] key, byte[] salt)
         {
             using (var aes = Aes.Create())
             {
@@ -76,7 +90,7 @@ namespace CryptoPWMS.Security
         /// <param name="key"></param>
         /// <param name="salt"></param>
         /// <returns></returns>
-        public static byte[] Decrypt(byte[] encrData, byte[] key, byte[] salt)
+        public static byte[] Decrypt_AES(byte[] encrData, byte[] key, byte[] salt)
         {
             using (var aes = Aes.Create())
             {

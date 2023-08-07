@@ -11,6 +11,18 @@ using System.Text;
 
 namespace CryptoPWMS.IO
 {
+    /*
+     *   __________                                               .___      
+     *   \______   \_____    ______ ________  _  _____________  __| _/______
+     *   |     ___/\__  \  /  ___//  ___/\ \/ \/ /  _ \_  __ \/ __ |/  ___/
+     *   |    |     / __ \_\___ \ \___ \  \     (  <_> )  | \/ /_/ |\___ \ 
+     *   |____|    (____  /____  >____  >  \/\_/ \____/|__|  \____ /____  >
+     *                  \/     \/     \/                          \/    \/ 
+     */
+
+    /// <summary>
+    /// 
+    /// </summary>
     internal static class Passwords
     {
         /// <summary>
@@ -108,8 +120,8 @@ namespace CryptoPWMS.IO
             {
                 byte[] key = Crypto.GenerateKey();                                                  // Generate unique encryption key.
                 byte[] salt = Crypto.GenerateSalt();                                                // Generate unique salt.
-                byte[] crypto_un = Crypto.Encrypt(Encoding.UTF8.GetBytes(username), key, salt);     // Encrypt username
-                byte[] crypto_pw = Crypto.Encrypt(Encoding.UTF8.GetBytes(password), key, salt);     // Encrypt password
+                byte[] crypto_un = Crypto.Encrypt_AES(Encoding.UTF8.GetBytes(username), key, salt);     // Encrypt username
+                byte[] crypto_pw = Crypto.Encrypt_AES(Encoding.UTF8.GetBytes(password), key, salt);     // Encrypt password
 
                 con.Open();
                 var cmd = new SQLiteCommand(con)

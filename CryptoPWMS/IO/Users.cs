@@ -5,12 +5,24 @@ using System.Windows;
 
 namespace CryptoPWMS.IO
 {
+    /*
+     *    ____ ___                           
+     *    |    |   \______ ___________  ______
+     *    |    |   /  ___// __ \_  __ \/  ___/
+     *    |    |  /\___ \\  ___/|  | \/\___ \ 
+     *    |______//____  >\___  >__|  /____  >
+     *                 \/     \/           \/ 
+     */
+
+    /// <summary>
+    /// 
+    /// </summary>
     internal class Users
     {
         /// <summary>
         /// Returns connection string of the database in the current executing directory.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The connection string for the application database.</returns>
         private static string ConnectionString()
         {
             return $"Data Source={AppDomain.CurrentDomain.BaseDirectory}\\Database\\pwdb.db;";
