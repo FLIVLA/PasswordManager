@@ -10,7 +10,7 @@ namespace CryptoPWMS.Utils
 {
     public static class UI_Transitions
     {
-        public static void FadeOut(FrameworkElement eOut, FrameworkElement eIn)
+        public static void Fade(FrameworkElement eOut, FrameworkElement eIn)
         {
             if (eOut == null || eIn == null)
                 throw new ArgumentNullException("Both fadeOutElement and fadeInElement must not be null.");

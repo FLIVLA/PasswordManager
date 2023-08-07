@@ -1,21 +1,12 @@
-﻿using CryptoPWMS.Models;
+﻿using CryptoPWMS.Components.ModalChildControls;
+using CryptoPWMS.IO;
+using CryptoPWMS.Models;
 using CryptoPWMS.Utils;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CryptoPWMS.Components
 {
@@ -38,28 +29,77 @@ namespace CryptoPWMS.Components
                 (selectionIndicator_PWG, rndpw_grid),
                 (selectionIndicator_Settings, Settings_grid)
             };
-            SetStack();
             SetPageSelection(0);
         }
 
-        public void SetStack()
-        {
-            grp_stack.Children.Add(new PasswordGroup("Social Media"));
-            grp_stack.Children.Add(new PasswordGroup("Email Accounts"));
-            grp_stack.Children.Add(new PasswordGroup("Work & Productivity"));
-            grp_stack.Children.Add(new PasswordGroup("Streaming Services"));
-            grp_stack.Children.Add(new PasswordGroup("Gaming Accounts"));
-            grp_stack.Children.Add(new PasswordGroup("Other"));
+        #region ====================== EVENT HANDLERS ======================
 
-            foreach (PasswordGroup grp in grp_stack.Children)
+        /// <summary>
+        /// Shows a form on screen for creating new password records
+        /// in the database. The shown form will temporarily disable
+        /// the main UI of the application, until the new record have
+        /// been created, or the users aborts by closing the modal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNew_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new Popup(new NewPasswordForm());               // Construct new modal and child control.
+            App.MainWin.blurGrid.Visibility = Visibility.Visible;   // Set visibility of "blur grid".
+            p.ShowDialog();                                         // Show modal as dialog.
+        }
+
+        #endregion
+
+        #region ========================== METHODS ==========================
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
+        private void SetPageSelection(int p)
+        {
+            for (int i = 0; i < MenuPairs.Count; i++)
             {
-                grp.AddPw("");
-                grp.AddPw("");
-                grp.AddPw("");
-                grp.AddPw("");
-                grp.AddPw("");
+                if (i == p)
+                {
+                    MenuPairs[i].Item1.Visibility = Visibility.Visible;
+                    MenuPairs[i].Item2.Visibility = Visibility.Visible;
+                    MenuPairs[i].Item2.IsEnabled = true;
+                }
+                else
+                {
+                    MenuPairs[i].Item1.Visibility = Visibility.Collapsed;
+                    MenuPairs[i].Item2.Visibility = Visibility.Collapsed;
+                    MenuPairs[i].Item2.IsEnabled = false;
+                }
             }
         }
+
+        public void ClearMain()
+        {
+            grp_stack.Children.Clear();
+            txt_Generatedpw.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// Creates container tree from password records associated with 
+        /// the user of the current active user id.
+        /// </summary>
+        public void FillPasswordData()
+        {
+            var grps = Passwords.Get_PWGroups();                                // Get groups from database
+            var pws = Passwords.GetByUserId(App.Cur_Uid);                       // Get password records from database (by iser id).
+
+            grps.ForEach(x => grp_stack.Children.Add(new PasswordGroup(x)));    // Add password group containers to vertical stack.            
+            foreach (PasswordGroup grp in grp_stack.Children)                   // Add Passwords to groupcontainers
+            {
+                pws.Where(x => x.Grp_Id == grp.GRP.Id).OrderBy(x => x.Platform).ToList()                                             
+                    .ForEach(pw => grp.pw_stack.Children.Add(new PasswordContainer(grp, pw))); 
+            }
+        }
+
+        #endregion
 
         #region MENU BTNS
 
@@ -85,6 +125,8 @@ namespace CryptoPWMS.Components
 
         private void btn_menu_signout_Click(object sender, RoutedEventArgs e)
         {
+            UI_Transitions.Fade(this, App.HomeScreen);
+            ClearMain();
         }
 
         #endregion
@@ -192,22 +234,12 @@ namespace CryptoPWMS.Components
 
         #endregion
 
-        private void SetPageSelection(int p)
+
+        public void UpdatePasswordGroup(int grpId)
         {
-            for (int i = 0; i < MenuPairs.Count; i++)
+            foreach (PasswordGroup grp in grp_stack.Children)
             {
-                if (i == p)
-                {
-                    MenuPairs[i].Item1.Visibility = Visibility.Visible;
-                    MenuPairs[i].Item2.Visibility = Visibility.Visible;
-                    MenuPairs[i].Item2.IsEnabled = true;
-                }
-                else
-                {
-                    MenuPairs[i].Item1.Visibility = Visibility.Collapsed;
-                    MenuPairs[i].Item2.Visibility = Visibility.Collapsed;
-                    MenuPairs[i].Item2.IsEnabled = false;
-                }
+                if (grp.GRP.Id == grpId) grp.Update();   
             }
         }
     }

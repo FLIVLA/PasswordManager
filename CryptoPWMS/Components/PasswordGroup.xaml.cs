@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace CryptoPWMS.Components
 {
@@ -21,16 +9,21 @@ namespace CryptoPWMS.Components
     /// </summary>
     public partial class PasswordGroup : UserControl
     {
-        public enum VertY2 { expand, collapse }
-        private List<PasswordContainer> Passwords { get; set; }
-        public PasswordGroup(string title)
-        {
-            Passwords = new List<PasswordContainer>();
-            InitializeComponent();
+        private Models.PasswordGroup _grp;
+        public Models.PasswordGroup GRP { get => _grp; set => _grp = value; }
 
-            txtTitle.Text = title;
+        public PasswordGroup(Models.PasswordGroup grp)
+        {
+            InitializeComponent();
+            _grp = grp;
+            txtTitle.Text = _grp.Name;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExpandCollapse_Click(object sender, RoutedEventArgs e)
         {
             if (SubGrid.Visibility == Visibility.Visible)
@@ -38,9 +31,16 @@ namespace CryptoPWMS.Components
             else SubGrid.Visibility = Visibility.Visible;
         }
 
-        public void AddPw(string s)
+        /// <summary>
+        /// Clears the group of all current passwords, then 
+        /// fills the group with most recent passwords associated with
+        /// the group id.
+        /// </summary>
+        public void Update()
         {
-            pw_stack.Children.Add(new PasswordContainer(this));
+            pw_stack.Children.Clear();
+            var pws = IO.Passwords.GetByGroup(_grp.Id);
+            pws.ForEach(x => pw_stack.Children.Add(new PasswordContainer(this, x)));
         }
     }
 }

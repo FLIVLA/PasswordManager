@@ -9,57 +9,63 @@
         ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
         WindowStyle="None"
-        Title="MainWindow" Height="650" Width="900"
+        Title="MainWindow" Height="650" Width="900" MinHeight="650" MinWidth="900"
         Background="Transparent"
         >
-    <Grid>
-        <Grid Background="#FF1A1A1A" Opacity="0.95"></Grid>
 
+    <Border Background="#FF1A1A1A" Opacity="0.95" CornerRadius="10" BorderBrush="#FF383838" BorderThickness="1.5">
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="35"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="60"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <Image Source="pack://application:,,,/img/app.png" Height="20" Grid.Column="0" Margin="5,0,0,0"></Image>
+                <Grid>
+                 
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="35"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
 
-
-                <StackPanel Orientation="Horizontal" Grid.Column="2">
-                    <Button x:Name="btn_minimize" 
+                    <StackPanel Orientation="Horizontal" Grid.Column="2">
+                        <Button x:Name="btn_minimize" 
                             Width="30" 
                             Foreground="{StaticResource txt_gr}" 
                             Style="{StaticResource transparent}" 
                             Click="btn_minimize_Click">--</Button>
-                    
-                    <Button x:Name="btn_close" 
+
+                        <Button x:Name="btn_close" 
                             Width="30" 
                             Foreground="{StaticResource txt_gr}" 
                             Style="{StaticResource transparent}" 
                             Click="btn_close_Click">X</Button>
-                </StackPanel>
+                    </StackPanel>
 
-                <Border x:Name="dragmv" 
+                    <Border x:Name="dragmv" 
                         MouseDown="dragmv_MouseDown" 
                         Background="Transparent" 
                         Grid.Column="0" 
                         Grid.ColumnSpan="2" 
                         Height="30"></Border>
 
+                </Grid>
+
+                <Grid Grid.Row="1">
+                    <uc:HomeScreen x:Name="Home" IsEnabled="True" Visibility="Visible"></uc:HomeScreen>
+                    <uc:MainUI x:Name="Main_ui"  IsEnabled="False" Visibility="Collapsed"></uc:MainUI>
+                </Grid>
             </Grid>
-
-            <Grid Grid.Row="1">
-                <uc:HomeScreen x:Name="Home" IsEnabled="True" Visibility="Visible"></uc:HomeScreen>
-                <uc:MainUI x:Name="Main_ui"  IsEnabled="False" Visibility="Collapsed"></uc:MainUI>
-
-            </Grid>
-
+            
+            <Border x:Name="blurGrid"
+                  Visibility="Collapsed"
+                  Background="#FF1A1A1A"
+                    CornerRadius="10"
+                    Margin="2"
+                  Opacity="0.8">
+            </Border>
         </Grid>
-    </Grid>
+    </Border>
+    
 </Window>

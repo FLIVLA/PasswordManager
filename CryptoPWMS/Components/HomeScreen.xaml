@@ -8,47 +8,295 @@
              d:DesignHeight="520" d:DesignWidth="800">
 
     <Grid>
-
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="250"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="55"/>
-                <RowDefinition Height="55"/>
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="title_L" FontWeight="ExtraBold" FontFamily="Consolas" Foreground="{StaticResource txt_gr}" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <TextBlock x:Name="title_L" 
+                       FontWeight="ExtraBold" 
+                       FontFamily="Consolas" 
+                       Foreground="{StaticResource txt_gr}" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Top">
+                
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Aqua"/>
+                    <DropShadowEffect BlurRadius="20" 
+                                      ShadowDepth="5" 
+                                      Color="Aqua"/>
                 </TextBlock.Effect>
             </TextBlock>
 
-            <Border Grid.Row="2" CornerRadius="10" Margin="0,8,0,8" BorderThickness="1" BorderBrush="{StaticResource txt_gr}" HorizontalAlignment="Center" Width="330">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Aqua"/>
-                </Border.Effect>
-            </Border>
+            <!--#region FORMS-->
+            <Grid Grid.Row="2">
 
-            <Border Grid.Row="3" CornerRadius="10" Margin="0,8,0,8" BorderThickness="1" BorderBrush="{StaticResource txt_gr}" HorizontalAlignment="Center" Width="330">
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="5" Color="Aqua"/>
-                </Border.Effect>
-            </Border>
+                <!--#region LOGIN FORM-->
+                <Grid x:Name="form_login">
 
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,0,0,0">
-                <Image Source="pack://application:,,,/img/user.png" Height="25"></Image>
-                <TextBox Grid.Row="2" Width="300" Height="28" FontSize="16" Margin="10,0,0,0" Style="{StaticResource transparent_txbx}"></TextBox>
-            </StackPanel>
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="20,0,0,0">
-                <Image Source="pack://application:,,,/img/key.png" Height="25"></Image>
-                <PasswordBox Grid.Row="3" Width="300" Height="28" Margin="10,0,0,0" FontSize="16" Style="{StaticResource transparent_pwbx}"></PasswordBox>
-            </StackPanel>
+                    <Grid.RenderTransform>
+                        <TranslateTransform X="0" Y="0"/>
+                    </Grid.RenderTransform>
 
-            <Button x:Name="btn_Login" Grid.Row="4" Height="40" Width="330" Foreground="Black" Background="{StaticResource txt_gr}" Opacity="0.7" Style="{StaticResource LoginBtn}" Content="Login" FontFamily="Consolas" FontWeight="ExtraBold" FontSize="18" Click="btn_Login_Click"></Button>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
 
-            <Button x:Name="btn_navToSignup" Grid.Row="5" Content="Create Account" FontFamily="Consolas" Style="{StaticResource TextBtn}" Foreground="{StaticResource txt_gr}" Click="btn_navToSignup_Click"></Button>
+                    <Border Grid.Row="0" 
+                            CornerRadius="10" 
+                            Margin="0,8,0,8" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource txt_gr}" 
+                            HorizontalAlignment="Center" 
+                            Width="330">
+
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="20" 
+                                              ShadowDepth="5" 
+                                              Color="Aqua"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <Border Grid.Row="1" 
+                            CornerRadius="10" 
+                            Margin="0,8,0,8" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource txt_gr}" 
+                            HorizontalAlignment="Center" 
+                            Width="330">
+
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="20" 
+                                              ShadowDepth="5" 
+                                              Color="Aqua"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel Grid.Row="0" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="20,0,0,0">
+
+                        <Image Source="pack://application:,,,/img/user.png" 
+                               Height="25"/>
+
+                        <TextBox x:Name="txt_username" 
+                                 Grid.Row="2" 
+                                 Width="300" 
+                                 Height="28" 
+                                 FontSize="16" 
+                                 Margin="10,0,0,0" 
+                                 Style="{StaticResource transparent_txbx}"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="20,0,0,0">
+
+                        <Image Source="pack://application:,,,/img/key.png" 
+                               Height="25"/>
+
+                        <PasswordBox x:Name="pwbx_password" Grid.Row="3" 
+                                     Width="300" 
+                                     Height="28" 
+                                     Margin="10,0,0,0" 
+                                     FontSize="16" 
+                                     Style="{StaticResource transparent_pwbx}"/>
+                    </StackPanel>
+
+                    <Button x:Name="btn_Login" 
+                            Grid.Row="2" 
+                            Height="40" 
+                            Width="330" 
+                            Foreground="Black" 
+                            Background="{StaticResource txt_gr}" 
+                            Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                            Content="Login" 
+                            FontFamily="Consolas" 
+                            FontWeight="ExtraBold" 
+                            FontSize="18" 
+                            Click="btn_Login_Click"/>
+
+                    <Button x:Name="btn_navToSignup" 
+                            Grid.Row="3" Content="Create Account" 
+                            FontFamily="Consolas" 
+                            Style="{StaticResource TextBtn}" 
+                            Foreground="{StaticResource txt_gr}" 
+                            Click="btn_navToSignup_Click">
+
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                                         Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         BeginTime="0:0:0.2"
+                                                         Duration="0:0:0.4"
+                                                         From="0" To="450" />
+                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                                         Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         BeginTime="0:0:0.2"
+                                                         Duration="0:0:0.4"
+                                                         From="-450" To="0" />
+                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         BeginTime="0:0:0.1"
+                                                         Duration="0:0:0.4"
+                                                         From="1" To="0" />
+                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         BeginTime="0:0:0.3"
+                                                         Duration="0:0:0.4"
+                                                         From="0" To="1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+
+                    </Button>
+
+                </Grid>
+                <!--#endregion-->
+
+                <!--#region SIGNUP FORM-->
+                <Grid x:Name="form_signup" Opacity="0">
+                    <Grid.RenderTransform>
+                        <TranslateTransform X="-450" Y="0"/>
+                    </Grid.RenderTransform>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="55"/>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="20"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" 
+                            CornerRadius="10" 
+                            Margin="0,8,0,8" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource txt_gr}" 
+                            HorizontalAlignment="Center" 
+                            Width="330">
+
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="20" 
+                                              ShadowDepth="5" 
+                                              Color="Aqua"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <Border Grid.Row="1" 
+                            CornerRadius="10" 
+                            Margin="0,8,0,8" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource txt_gr}" 
+                            HorizontalAlignment="Center" 
+                            Width="330">
+
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="20" 
+                                              ShadowDepth="5" 
+                                              Color="Aqua"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <StackPanel Grid.Row="0" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="20,0,0,0">
+
+                        <Image Source="pack://application:,,,/img/user.png" 
+                               Height="25"/>
+
+                        <TextBox x:Name="txt_newUsername" 
+                                 Grid.Row="2" 
+                                 Width="300" 
+                                 Height="28" 
+                                 FontSize="16" 
+                                 Margin="10,0,0,0" 
+                                 Style="{StaticResource transparent_txbx}"/>
+
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="20,0,0,0">
+
+                        <Image Source="pack://application:,,,/img/key.png" 
+                               Height="25"/>
+
+                        <PasswordBox x:Name="pwbx_newPassword" Grid.Row="3" 
+                                     Width="300" 
+                                     Height="28" 
+                                     Margin="10,0,0,0" 
+                                     FontSize="16" 
+                                     Style="{StaticResource transparent_pwbx}"/>
+                    </StackPanel>
+
+                    <Button x:Name="btn_signup" 
+                            Grid.Row="2" 
+                            Height="40" 
+                            Width="330" 
+                            Foreground="Black" 
+                            Background="{StaticResource txt_gr}" 
+                            Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                            Content="Create Account" 
+                            FontFamily="Consolas" 
+                            FontWeight="ExtraBold" 
+                            FontSize="18" 
+                            Click="btn_signup_Click"/>
+
+                    <Button x:Name="btn_navToLogin" 
+                            Grid.Row="3" Content="Login" 
+                            FontFamily="Consolas" 
+                            Style="{StaticResource TextBtn}" 
+                            Foreground="{StaticResource txt_gr}" 
+                            Click="btn_navToLogin_Click">
+
+                        <Button.Triggers>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                                         Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         BeginTime="0:0:0.2"
+                                                         Duration="0:0:0.4"
+                                                         From="0" To="450" />
+                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                                         Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                                                         BeginTime="0:0:0.2"
+                                                         Duration="0:0:0.4"
+                                                         From="-450" To="0" />
+                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         BeginTime="0:0:0.1"
+                                                         Duration="0:0:0.4"
+                                                         From="1" To="0" />
+                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                                         Storyboard.TargetProperty="Opacity"
+                                                         BeginTime="0:0:0.3"
+                                                         Duration="0:0:0.4"
+                                                         From="0" To="1" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </Button.Triggers>
+
+                    </Button>
+                </Grid>
+                <!--#endregion-->
+
+            </Grid>
+            <!--#endregion-->
             
         </Grid>
 

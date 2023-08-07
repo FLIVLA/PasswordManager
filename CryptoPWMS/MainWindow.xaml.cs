@@ -1,4 +1,5 @@
 ﻿using CryptoPWMS.Components;
+using CryptoPWMS.IO;
 using CryptoPWMS.Utils;
 using System.Windows;
 using System.Windows.Input;
@@ -13,7 +14,10 @@ namespace CryptoPWMS
         public MainWindow()
         {
             InitializeComponent();
-            Home.Main = Main_ui;
+            App.MainWin = this;
+            App.HomeScreen = Home;
+            App.MainUI = Main_ui;
+
         }
 
         private void btn_minimize_Click(object sender, RoutedEventArgs e)
