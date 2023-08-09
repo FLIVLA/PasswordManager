@@ -22,7 +22,8 @@ namespace CryptoPWMS.Security
     /// <summary>
     /// Crypto is a static class, and servers as a helper class for all encryption
     /// related operations in the password manager. Has necessary methods to
-    /// perform key and salt generation, AES and RSA encryption and decryption.
+    /// perform key and salt generation, AES encryption and decryption, and hashing
+    /// methods using argon2 hashing algorithm implementation.
     /// </summary>
     internal static class Crypto
     {
@@ -56,14 +57,13 @@ namespace CryptoPWMS.Security
         }
 
         #endregion
-
         #region =========================== VAULT METHODS ===========================
 
         /// <summary>
-        /// 
+        /// Encrypts the user's vault using AES encryption with the provided key.
         /// </summary>
-        /// <param name="vaultPath"></param>
-        /// <param name="key"></param>
+        /// <param name="vaultPath">The name of the user's vault.</param>
+        /// <param name="key">The encryption key used for encryption. (Master key).</param>
         public static void EncryptVault(string user_vaultname, byte[] key)
         {
             var tempDecr = Vaults.VaultPath(Vaults.VaultState.Decrypted_Temp, user_vaultname);
@@ -93,10 +93,10 @@ namespace CryptoPWMS.Security
         }
 
         /// <summary>
-        /// 
+        /// Decrypts the user's vault using AES decryption with the provided key. (Master key)
         /// </summary>
-        /// <param name="user_vaultname"></param>
-        /// <param name="key"></param>
+        /// <param name="user_vaultname">The name of the user's vault.</param>
+        /// <param name="key">The decryption key used for decryption.</param>
         public static void DecryptVault(string user_vaultname, byte[] key)
         {
             if (!Directory.Exists(Vaults.TempDir)) Directory.CreateDirectory(Vaults.TempDir);
@@ -124,23 +124,33 @@ namespace CryptoPWMS.Security
         }
 
         #endregion
+        #region =========================== AES METHODS ===========================       
 
-        #region =========================== AES METHODS ===========================
-
+        /// <summary>
+        /// Encrypts the provided data using AES encryption with Argon2-derived key.
+        /// </summary>
+        /// <param name="data">Input data for encryption.</param>
+        /// <param name="key">The key derived using Argon2.</param>
+        /// <param name="salt">The salt used for Argon2 key derivation.</param>
+        /// <param name="iv">The initialization vector for AES encryption.</param>
+        /// <returns>The encrypted data.</returns>
         public static byte[] Encrypt_AES(byte[] data, byte[] key, byte[] salt, byte[] iv)
         {
-            using (Aes aesAlg = Aes.Create())
+            using (Aes aesAlg = Aes.Create())                               
             {
                 aesAlg.KeySize = 256;
-                aesAlg.Key = key;
-                aesAlg.IV = iv; // Use the provided IV
 
-                // Use PBKDF2 to derive a key from the given salt and password
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt, 10000, HashAlgorithmName.SHA256);
-                aesAlg.Key = pdb.GetBytes(32);
+                using (var argon2 = new Argon2id(key))
+                {
+                    argon2.Iterations = 20;     
+                    argon2.DegreeOfParallelism = 2;
+                    argon2.MemorySize = 8192;
+                    argon2.Salt = salt;
+                    aesAlg.Key = argon2.GetBytes(32);
+                }
 
-                // Set the padding mode
-                aesAlg.Padding = PaddingMode.PKCS7;
+                aesAlg.IV = iv;                                            
+                aesAlg.Padding = PaddingMode.PKCS7;                         
 
                 using (MemoryStream msEncrypt = new MemoryStream())
                 {
@@ -157,19 +167,31 @@ namespace CryptoPWMS.Security
             }
         }
 
+        /// <summary>
+        /// Decrypts the provided encrypted data using AES decryption with Argon2-derived key.        
+        /// </summary>
+        /// <param name="encryptedData">The encrypted data to be decrypted.</param>
+        /// <param name="key">The key derived using Argon2.</param>
+        /// <param name="salt">The salt used for Argon2 key derivation.</param>
+        /// <param name="iv">The initialization vector for AES decryption.</param>
+        /// <returns>The decrypted data.</returns>
         public static byte[] Decrypt_AES(byte[] encryptedData, byte[] key, byte[] salt, byte[] iv)
         {
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.KeySize = 256;
-                aesAlg.Key = key;
-                aesAlg.IV = iv; // Use the provided IV
 
-                // Use PBKDF2 to derive a key from the given salt and password
-                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt, 10000, HashAlgorithmName.SHA256);
-                aesAlg.Key = pdb.GetBytes(32);
+                using (var argon2 = new Argon2id(key))
+                {
+                    argon2.Iterations = 20;
+                    argon2.DegreeOfParallelism = 2;
+                    argon2.MemorySize = 8192;
+                    argon2.Salt = salt;
+                    
+                    aesAlg.Key = argon2.GetBytes(32);
+                }
 
-                // Set the padding mode
+                aesAlg.IV = iv;                                             
                 aesAlg.Padding = PaddingMode.PKCS7;
 
                 using (MemoryStream msDecrypt = new MemoryStream(encryptedData))
@@ -184,44 +206,50 @@ namespace CryptoPWMS.Security
         }
 
         #endregion
+        #region ===================== ARGON 2 IMPLEMENTATION ========================
 
-        public static string Hash_Argon2(string password, byte[] salt) 
+        /// <summary>
+        /// Creates Argon2id hash of the provided password and salt, 
+        /// and returns the hash as a lowercase hexadecimal string.
+        /// </summary>
+        /// <param name="password">The password to hash.</param>
+        /// <param name="salt">The salt to use for hashing.</param>
+        /// <returns>The Argon2id hash as hexadecimal string</returns>
+        public static string Hash_Argon2_HEX(string password, byte[] salt) 
         {
-            int itr = 10;
-            int memprySize = 131072;
-            int parallelism = 4;
-
             using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)))
             {
                 argon2.Salt = salt;
-                argon2.DegreeOfParallelism = parallelism;
-                argon2.MemorySize = memprySize;
-                argon2.Iterations = itr;
+                argon2.DegreeOfParallelism = 2;
+                argon2.MemorySize = 8192;
+                argon2.Iterations = 20;
 
                 byte[] hb = argon2.GetBytes(32);
                 string hex = BitConverter.ToString(hb).Replace("-", "").ToLower();
-
                 return hex;
             }
         }
 
+        /// <summary>
+        /// Derives a key from the provided master password and salt 
+        /// using the Argon2id key derivation function.
+        /// </summary>
+        /// <param name="masterPassword">Master password to derive key from.</param>
+        /// <param name="salt">Master salt (stored in database).</param>
+        /// <returns>The derived key as array of bytes.</returns>
         public static byte[] DeriveKey(string masterPassword, byte[] salt)
         {
-            int itr = 12;
-            int memorySize = 131072;
-            int threads = 4;
-            int outputLength = 32;
-
-            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(Hash_Argon2(masterPassword, salt))))
+            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(masterPassword)))
             {
                 argon2.Salt = salt;
-                argon2.DegreeOfParallelism = threads;
-                argon2.MemorySize = memorySize;
-                argon2.Iterations = itr;
+                argon2.DegreeOfParallelism = 2;
+                argon2.MemorySize = 8192;
+                argon2.Iterations = 20;
 
-                return argon2.GetBytes(outputLength);
+                return argon2.GetBytes(32);
             }
         }
 
+        #endregion
     }
 }

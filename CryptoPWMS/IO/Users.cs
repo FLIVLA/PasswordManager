@@ -51,7 +51,7 @@ namespace CryptoPWMS.IO
 
                 cmd.Prepare();                                                  
                 cmd.Parameters.AddWithValue(@"Username", (username));                           // Sets parameter value of 'Username' to input value.
-                cmd.Parameters.AddWithValue(@"Password", Crypto.Hash_Argon2(password, salt));   // Sets parameter value of 'Password' to a hashed representation of the input value.
+                cmd.Parameters.AddWithValue(@"Password", Crypto.Hash_Argon2_HEX(password, salt));   // Sets parameter value of 'Password' to a hashed representation of the input value.
                 cmd.Parameters.AddWithValue(@"Salt", salt);
                 cmd.ExecuteNonQuery();                                                          // Executes the command on the database.
                 return true;
@@ -90,9 +90,9 @@ namespace CryptoPWMS.IO
                         string hash = reader.GetString(1);
                         byte[] salt = (byte[])reader["Salt"];
                         App.Salt = salt;
-                        string inputHash = Crypto.Hash_Argon2(password, salt);       // Hash input password with Argon2 using the stored salt.
+                        string inputHash = Crypto.Hash_Argon2_HEX(password, salt);       // Hash input password with Argon2 using the stored salt.
                         if (hash.Equals(inputHash)) { 
-                            return Crypto.Hash_Argon2(reader.GetString(0), salt);   // return username if hash matches hash of input password hashed with stored salt.
+                            return Crypto.Hash_Argon2_HEX(reader.GetString(0), salt);   // return username if hash matches hash of input password hashed with stored salt.
                         }   
                     }
                     else return "";                                                  // If no match of the input username was found in the database.

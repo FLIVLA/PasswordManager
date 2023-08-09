@@ -82,17 +82,23 @@ namespace CryptoPWMS.Components
 
         private void btn_menu_signout_Click(object sender, RoutedEventArgs e)
         {
-            Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
+            if (!App.IsFileLocked(Vaults.VaultPath(Vaults.VaultState.Decrypted_Temp, App.Cur_User)))
+            {
+                Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
 
-            App.IsAuthenticated = false;
-            App.Cur_User = "";
-            App.DerivedKey = new byte[0];
-            App.Salt = new byte[0];
+                App.IsAuthenticated = false;
+                App.Cur_User = "";
+                App.DerivedKey = new byte[0];
+                App.Salt = new byte[0];
 
-            App.HomeScreen.ResetLoginSection();
+                App.HomeScreen.ResetLoginSection();
 
-            UI_Transitions.Fade(this, App.HomeScreen);
-            ClearMain();
+                UI_Transitions.Fade(this, App.HomeScreen);
+                ClearMain();
+            }
+            else MessageBox.Show("Temp file is blocked. wait a few seconds and try again" +
+                        "\nThis is due wo sqlite not having released the file yet. " +
+                        "Usually it takes max 5 seconds before it is done.");
         }
 
         #endregion

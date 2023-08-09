@@ -41,13 +41,20 @@ namespace CryptoPWMS
         {
             if (App.Cur_User != "" && App.IsAuthenticated)                                     // User ID will be empty string no user is logged in.
             {
-                Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
-            }
-            else
-            {
-                var tempFiles = Directory.GetFiles(Vaults.TempDir);
-                foreach (var file in tempFiles)
+                if (!App.IsFileLocked(Vaults.VaultPath(Vaults.VaultState.Decrypted_Temp, App.Cur_User)))
                 {
+                    Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
+                }
+                else {
+                    MessageBox.Show("Temp file is blocked. wait a few seconds and try again" +
+                        "\nThis is due wo sqlite not having released the file yet. " +
+                        "Usually it takes max 5 seconds before it is done.");
+                    return;
+                }
+            }
+            else {
+                var tempFiles = Directory.GetFiles(Vaults.TempDir);
+                foreach (var file in tempFiles) {
                     File.Delete(file);
                 }
             }
@@ -62,7 +69,10 @@ namespace CryptoPWMS
         /// <param name="e"></param>
         private void dragmv_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
     }
 }

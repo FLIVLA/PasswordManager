@@ -50,6 +50,7 @@ namespace CryptoPWMS.IO
         {
             using (IDbConnection con = new SQLiteConnection(ConnectionString()))
             {
+                con.Open();
                 var groups = con.Query<PasswordGroup>("SELECT * FROM PasswordGroup", new DynamicParameters());
                 return groups.ToList();
             }
@@ -63,16 +64,16 @@ namespace CryptoPWMS.IO
         public static List<PasswordItem> GetAll()
         {
             var pws = new List<PasswordItem>();
-            var con = new SQLiteConnection(ConnectionString());
             try
             {
-                con.Open();
-                var query = "SELECT * FROM Password";
-
-                pws = con.Query<PasswordItem>(query).OrderBy(x => x.Platform).ToList();
+                using (var con = new SQLiteConnection(ConnectionString())) 
+                {
+                    con.Open();
+                    var query = "SELECT * FROM Password";
+                    pws = con.Query<PasswordItem>(query).OrderBy(x => x.Platform).ToList();
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }
             return pws;
         }
 
@@ -86,18 +87,17 @@ namespace CryptoPWMS.IO
         public static List<PasswordItem> GetByGroup(int grp)
         {
             var pws = new List<PasswordItem>();                         // Initialize new empty list of type PasswordItem
-            var con = new SQLiteConnection(ConnectionString());         
             try
             {
-                con.Open();                                             // Open the database connection.
-                var query = "SELECT * FROM Password " +
-                            "WHERE Grp_Id=@Grp_Id";
+                using (var con = new SQLiteConnection(ConnectionString())) 
+                {
+                    var query = "SELECT * FROM Password " +
+                                "WHERE Grp_Id=@Grp_Id";
 
-                pws = con.Query<PasswordItem>(query, new { Grp_Id = grp }).OrderBy(x => x.Platform).ToList();
-                string s = "";
+                    pws = con.Query<PasswordItem>(query, new { Grp_Id = grp }).OrderBy(x => x.Platform).ToList();
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }                                    // Ensures that database connection is closed.
             return pws;
         }
 
@@ -119,7 +119,6 @@ namespace CryptoPWMS.IO
         /// <param name="password">Password value in plaintext.</param>
         public static void Insert(int grp, string platform, string url, string username, string password)
         {
-            var con = new SQLiteConnection(ConnectionString());
             try
             {
                 byte[] key = Crypto.GenerateKey();                                                      // Generate unique encryption key.             
@@ -137,28 +136,30 @@ namespace CryptoPWMS.IO
                     byte[] encryptedKey = Crypto.Encrypt_AES(key, App.DerivedKey, App.Salt, iv);
                     byte[] encryptedSalt = Crypto.Encrypt_AES(salt, App.DerivedKey, App.Salt, iv);
 
-                    con.Open();
-                    var cmd = new SQLiteCommand(con)
+                    using (var con = new SQLiteConnection(ConnectionString()))
                     {
-                        CommandText = "INSERT INTO Password (Grp_Id, Platform, URL, Username, Password, Key, Salt, IV, LastUpdated)" +
-                                      "VALUES(@Grp_Id, @Platform, @URL, @Username, @Password, @Key, @Salt, @IV, @LastUpdated)"
-                    };
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue(@"Grp_Id", grp);
-                    cmd.Parameters.AddWithValue(@"Platform", platform);
-                    cmd.Parameters.AddWithValue(@"URL", url);
-                    cmd.Parameters.AddWithValue(@"Username", crypto_un);
-                    cmd.Parameters.AddWithValue(@"Password", crypto_pw);
-                    cmd.Parameters.AddWithValue(@"Key", encryptedKey);
-                    cmd.Parameters.AddWithValue(@"Salt", encryptedSalt);
-                    cmd.Parameters.AddWithValue(@"IV", iv);
-                    cmd.Parameters.AddWithValue(@"LastUpdated", DateTime.Now.ToString("MM/dd/yyyy HH:mm"));
+                        con.Open();
+                        var cmd = new SQLiteCommand(con)
+                        {
+                            CommandText = "INSERT INTO Password (Grp_Id, Platform, URL, Username, Password, Key, Salt, IV, LastUpdated)" +
+                                          "VALUES(@Grp_Id, @Platform, @URL, @Username, @Password, @Key, @Salt, @IV, @LastUpdated)"
+                        };
+                        cmd.Prepare();
+                        cmd.Parameters.AddWithValue(@"Grp_Id", grp);
+                        cmd.Parameters.AddWithValue(@"Platform", platform);
+                        cmd.Parameters.AddWithValue(@"URL", url);
+                        cmd.Parameters.AddWithValue(@"Username", crypto_un);
+                        cmd.Parameters.AddWithValue(@"Password", crypto_pw);
+                        cmd.Parameters.AddWithValue(@"Key", encryptedKey);
+                        cmd.Parameters.AddWithValue(@"Salt", encryptedSalt);
+                        cmd.Parameters.AddWithValue(@"IV", iv);
+                        cmd.Parameters.AddWithValue(@"LastUpdated", DateTime.Now.ToString("MM/dd/yyyy HH:mm"));
 
-                    cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                    }
                 }                                 
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }                                        // Ensures that database connection is closed.                                                               
         }
 
         /// <summary>
@@ -168,20 +169,21 @@ namespace CryptoPWMS.IO
         /// <param name="grpName"></param>
         public static void InsertGroup(string grpName)
         {
-            var con = new SQLiteConnection(ConnectionString());
             try
             {
-                con.Open();
-                var cmd = new SQLiteCommand(con)
+                using (var con = new SQLiteConnection(ConnectionString()))
                 {
-                    CommandText = "INSERT INTO PasswordGroup (Name) VALUES(@Name)"
-                };
-                cmd.Prepare();
-                cmd.Parameters.AddWithValue("@Name", grpName);
-                cmd.ExecuteNonQuery();
+                    con.Open();
+                    var cmd = new SQLiteCommand(con)
+                    {
+                        CommandText = "INSERT INTO PasswordGroup (Name) VALUES(@Name)"
+                    };
+                    cmd.Prepare();
+                    cmd.Parameters.AddWithValue("@Name", grpName);
+                    cmd.ExecuteNonQuery();
+                }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }
         }
 
         #endregion
@@ -199,7 +201,6 @@ namespace CryptoPWMS.IO
         /// <param name="password"></param>
         public static void Update(PasswordItem p, string username, string password)
         {
-            var con = new SQLiteConnection(ConnectionString());
             try
             {
                 byte[] key = Crypto.GenerateKey();                                                      // Generate unique encryption key.             
@@ -217,37 +218,39 @@ namespace CryptoPWMS.IO
                     byte[] encryptedKey = Crypto.Encrypt_AES(key, App.DerivedKey, App.Salt, iv);
                     byte[] encryptedSalt = Crypto.Encrypt_AES(salt, App.DerivedKey, App.Salt, iv);
 
-                    con.Open();
-                    var cmd = new SQLiteCommand(con)
+                    using (var con = new SQLiteConnection(ConnectionString()))
                     {
-                        CommandText = "UPDATE Password SET " +
-                                      "Grp_Id=@Grp_Id, " +
-                                      "Platform=@Platform, " +
-                                      "URL=@URL, " +
-                                      "Username=@Username, " +
-                                      "Password=@Password, " +
-                                      "Key=@Key, " +
-                                      "Salt=@Salt, " +
-                                      "IV=@IV, " +
-                                      "LastUpdated=@LastUpdated WHERE Id=@Id"
-                    };
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue(@"Grp_Id", p.Grp_Id);
-                    cmd.Parameters.AddWithValue(@"Platform", p.Platform);
-                    cmd.Parameters.AddWithValue(@"URL", p.URL);
-                    cmd.Parameters.AddWithValue(@"Username", crypto_un);
-                    cmd.Parameters.AddWithValue(@"Password", crypto_pw);
-                    cmd.Parameters.AddWithValue(@"Key", encryptedKey);
-                    cmd.Parameters.AddWithValue(@"Salt", encryptedSalt);
-                    cmd.Parameters.AddWithValue(@"IV", iv);
-                    cmd.Parameters.AddWithValue(@"LastUpdated", DateTime.Now.ToString("MM/dd/yyyy HH:mm"));
-                    cmd.Parameters.AddWithValue(@"Id", p.Id);
+                        con.Open();
+                        var cmd = new SQLiteCommand(con)
+                        {
+                            CommandText = "UPDATE Password SET " +
+                                          "Grp_Id=@Grp_Id, " +
+                                          "Platform=@Platform, " +
+                                          "URL=@URL, " +
+                                          "Username=@Username, " +
+                                          "Password=@Password, " +
+                                          "Key=@Key, " +
+                                          "Salt=@Salt, " +
+                                          "IV=@IV, " +
+                                          "LastUpdated=@LastUpdated WHERE Id=@Id"
+                        };
+                        cmd.Prepare();
+                        cmd.Parameters.AddWithValue(@"Grp_Id", p.Grp_Id);
+                        cmd.Parameters.AddWithValue(@"Platform", p.Platform);
+                        cmd.Parameters.AddWithValue(@"URL", p.URL);
+                        cmd.Parameters.AddWithValue(@"Username", crypto_un);
+                        cmd.Parameters.AddWithValue(@"Password", crypto_pw);
+                        cmd.Parameters.AddWithValue(@"Key", encryptedKey);
+                        cmd.Parameters.AddWithValue(@"Salt", encryptedSalt);
+                        cmd.Parameters.AddWithValue(@"IV", iv);
+                        cmd.Parameters.AddWithValue(@"LastUpdated", DateTime.Now.ToString("MM/dd/yyyy HH:mm"));
+                        cmd.Parameters.AddWithValue(@"Id", p.Id);
 
-                    cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }
         }
 
         /// <summary>

@@ -116,9 +116,10 @@ namespace CryptoPWMS.Components
         /// <param name="e"></param>
         private void btn_unlockPass_Click(object sender, RoutedEventArgs e)
         {
-            var p = new Popup(new UnlockForm(this));
-            App.MainWin.blurGrid.Visibility = Visibility.Visible;
-            p.ShowDialog();
+            //var p = new Popup(new UnlockForm(this));
+            //App.MainWin.blurGrid.Visibility = Visibility.Visible;
+            //p.ShowDialog();
+            Unlock();
         }
 
         /// <summary>
