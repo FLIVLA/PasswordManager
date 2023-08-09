@@ -165,5 +165,87 @@ namespace CryptoPWMS.Components
             txt_newUsername.Text = string.Empty;
             pwbx_newPassword.Password = string.Empty;
         }
+
+        #region ============================ FOCUS ==========================
+
+        private void pwbx_password_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeholder_pw.Visibility= Visibility.Collapsed;
+        }
+
+        private void pwbx_password_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(pwbx_password.Password) || string.IsNullOrWhiteSpace(pwbx_password.Password))
+            {
+                placeholder_pw.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void txt_username_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeholder_username.Visibility = Visibility.Collapsed;
+        }
+
+        private void txt_username_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txt_username.Text) || string.IsNullOrWhiteSpace(txt_username.Text))
+            {
+                placeholder_username.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void pwbx_newPassword_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeholder_newpw.Visibility = Visibility.Collapsed;
+        }
+
+        private void pwbx_newPassword_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(pwbx_newPassword.Password) || string.IsNullOrWhiteSpace(pwbx_newPassword.Password))
+            {
+                placeholder_newpw.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void txt_newUsername_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeholder_newusername.Visibility = Visibility.Collapsed;
+        }
+
+        private void txt_newUsername_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(txt_newUsername.Text) || string.IsNullOrWhiteSpace(txt_newUsername.Text))
+            {
+                placeholder_newusername.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void pwbx_newMasterkey_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeholder_newmk.Visibility = Visibility.Collapsed;
+        }
+
+        private void pwbx_newMasterkey_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(pwbx_newMasterkey.Password) || string.IsNullOrWhiteSpace(pwbx_newMasterkey.Password))
+            {
+                placeholder_newmk.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void pwbx_masterkey_GotFocus(object sender, RoutedEventArgs e)
+        {
+            placeholder_mk.Visibility = Visibility.Collapsed;
+        }
+
+        private void pwbx_masterkey_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(pwbx_masterkey.Password) || string.IsNullOrWhiteSpace(pwbx_masterkey.Password))
+            {
+                placeholder_mk.Visibility = Visibility.Visible;
+            }
+        }
+
+        #endregion
     }
 }
