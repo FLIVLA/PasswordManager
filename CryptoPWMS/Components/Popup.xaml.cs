@@ -27,12 +27,28 @@ namespace CryptoPWMS.Components
                 Width = 600; Height = 495;                      // Set height and width properties based on specific child control type.
                 var npw = child as NewPasswordForm;
                 npw.Parent = this;                              // Set parent of child to this (to enable ability to close this from child)
+                txt_Title.Text = "New Password";
+            }
+
+            else if (child.GetType() == typeof(NewGroupForm)) {
+                Width = 500; Height = 250;
+                var ngf = child as NewGroupForm;
+                ngf.Parent = this;
+                txt_Title.Text = "New Folder";
+            }
+
+            else if (child.GetType() == typeof(EditPasswordForm)) { // Specific property settings for child control of type EditPasswordForm
+                Width = 600; Height = 495;                          // Set height and width properties based on specific child control type.
+                var npw = child as EditPasswordForm;
+                npw.Parent = this;                                  // Set parent of child to this (to enable ability to close this from child)
+                txt_Title.Text = "Edit Password";
             }
 
             else if (child.GetType() == typeof(DeleteScreen)) {     // Specific property settings for child control of type DeleteScreen.
                 Width = 500; Height = 250;                          // Set height and width properties based on specific child control type.
                 var delScr = child as DeleteScreen;
                 delScr.Parent = this;                               // Set parent of child to this (to enable ability to close this from child)
+                txt_Title.Visibility = Visibility.Collapsed;
             }
 
             else if (child.GetType() == typeof(UnlockForm)) {   // Specific property settings for child control of type UnlockForm.

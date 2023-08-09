@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Konscious.Security.Cryptography;
-using Scrypt;
 
 namespace CryptoPWMS.Security
 {

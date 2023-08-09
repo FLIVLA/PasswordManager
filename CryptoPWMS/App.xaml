@@ -199,7 +199,6 @@
             <Setter Property="Foreground" Value="{StaticResource txt_gr}"></Setter>
             <Setter Property="CaretBrush" Value="{StaticResource txt_gr}"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
-            <Setter Property="FontFamily" Value="Consolas"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 
@@ -208,7 +207,6 @@
             <Setter Property="Foreground" Value="{StaticResource txt_gr}"></Setter>
             <Setter Property="CaretBrush" Value="{StaticResource txt_gr}"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
-            <Setter Property="FontFamily" Value="Consolas"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
 

@@ -128,7 +128,7 @@ namespace CryptoPWMS.Components
         /// <param name="e"></param>
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
-            var p = new Popup(new NewPasswordForm());
+            var p = new Popup(new EditPasswordForm(item));
             App.MainWin.blurGrid.Visibility = Visibility.Visible;
             p.ShowDialog();
         }
@@ -180,9 +180,9 @@ namespace CryptoPWMS.Components
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                txt_password.Text = pwbx_password.Password;
-                pwbx_password.Visibility = Visibility.Collapsed;
-                txt_password.Visibility = Visibility.Visible;
+                txt_password.Text = pwbx_password.Password;         // Set the value of the temporarily shown password text field.
+                pwbx_password.Visibility = Visibility.Collapsed;    // Temporarily hide the password box containing the decrypted password.
+                txt_password.Visibility = Visibility.Visible;       // Show the text field to view the decrypted password as text.
             }
         }
 
@@ -196,9 +196,9 @@ namespace CryptoPWMS.Components
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                txt_password.Text = string.Empty;
-                txt_password.Visibility = Visibility.Collapsed;
-                pwbx_password.Visibility = Visibility.Visible;
+                txt_password.Text = string.Empty;                   // clear the value of the temporarily shown password text field.
+                txt_password.Visibility = Visibility.Collapsed;     // Hide the temporaily shown password text field.
+                pwbx_password.Visibility = Visibility.Visible;      // Show the password box containing the decrypted password.
             }
         }
 
@@ -259,36 +259,30 @@ namespace CryptoPWMS.Components
         {
             try
             {
-                byte[] decryptedSalt = Crypto.Decrypt_AES(item.Salt, App.DerivedKey, App.Salt, item.IV);
-                byte[] decryptedKey = Crypto.Decrypt_AES(item.Key, App.DerivedKey, App.Salt, item.IV);
+                byte[] decryptedSalt = Crypto.Decrypt_AES(item.Salt, App.DerivedKey, App.Salt, item.IV);                // Decrypt the stored unique salt of the password record
+                byte[] decryptedKey = Crypto.Decrypt_AES(item.Key, App.DerivedKey, App.Salt, item.IV);                  // Decrypt the stored unique encryption key of the password record.
 
-                byte[] encryptedUsername = item.Username;
-                byte[] encryptedPassword = item.Password;
+                byte[] decryptedUsername = Crypto.Decrypt_AES(item.Username, decryptedKey, decryptedSalt, item.IV);     // Decrypt the encrypted username using the decrypted key and salt.
+                byte[] decryptedPassword = Crypto.Decrypt_AES(item.Password, decryptedKey, decryptedSalt, item.IV);     // Decrypt the encrypted password using the decrypted key and salt.
 
-                byte[] decryptedUsername = Crypto.Decrypt_AES(encryptedUsername, decryptedKey, decryptedSalt, item.IV);
-                byte[] decryptedPassword = Crypto.Decrypt_AES(encryptedPassword, decryptedKey, decryptedSalt, item.IV);
+                txt_username.Text = Encoding.UTF8.GetString(decryptedUsername);             // Set the decrypted username value in the username field of the container. 
+                pwbx_password.Password = Encoding.UTF8.GetString(decryptedPassword);        // Set the decrypted password value in the password field of the container. (disabled passwordbox)
 
-                string username = Encoding.UTF8.GetString(decryptedUsername);
-                string password = Encoding.UTF8.GetString(decryptedPassword);
+                txt_username_placeholder.Visibility = Visibility.Collapsed;                 // Hide the placeholder values (textblocks indicating values are currently encrypted).
+                txt_password_placeholder.Visibility = Visibility.Collapsed;                 
+                btn_RevealPassword.Visibility = Visibility.Visible;                         // Show the reveal password button (for temporarily show the value of the decrypted password as text).
 
-                txt_username.Text = username;
-                pwbx_password.Password = password;
-
-                txt_username_placeholder.Visibility = Visibility.Collapsed;
-                txt_password_placeholder.Visibility = Visibility.Collapsed;
-                btn_RevealPassword.Visibility = Visibility.Visible;
-
-                btn_CopyUsername.Opacity = 1.0;
+                btn_CopyUsername.Opacity = 1.0;                                             // Set opacity of the copy-to-clipboard buttons indicating IsEnabled state = true.
                 btn_CopyPassword.Opacity = 1.0;
 
-                btn_RevealPassword.IsEnabled = true;              
+                btn_RevealPassword.IsEnabled = true;                                        // Set availability of reveal password button + copy-to-clipboard buttons.
                 btn_CopyPassword.IsEnabled = true;
                 btn_CopyUsername.IsEnabled = true;
 
-                var sb_exp = FindResource("sb_timerExpiration") as Storyboard;
-                timespan = TimeSpan.FromSeconds(10);
-                timer.Start();
-                sb_exp.Begin();
+                var sb_exp = FindResource("sb_timerExpiration") as Storyboard;              // Get the storyboard resource of the container for the timer expiration animation.
+                timespan = TimeSpan.FromSeconds(10);                                        // Set a timespan of 10 seconds for timing clearing decrypted values from the container.
+                timer.Start();                                                              // start the timer.
+                sb_exp.Begin();                                                             // start the timer expiration animation.
 
             }
             catch (Exception ex)

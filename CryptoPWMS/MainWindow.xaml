@@ -11,9 +11,9 @@
         WindowStyle="None"
         Title="MainWindow" Height="650" Width="900" MinHeight="650" MinWidth="900"
         Background="Transparent"
-        >
+        WindowStartupLocation="CenterScreen">
 
-    <Border Background="#FF1A1A1A" Opacity="0.95" CornerRadius="10" BorderBrush="#FF383838" BorderThickness="1.5">
+    <Border Background="#FF1A1A1A" Opacity="1" CornerRadius="10" BorderBrush="#FF383838" BorderThickness="1.5">
         <Grid>
             <Grid>
                 <Grid.RowDefinitions>

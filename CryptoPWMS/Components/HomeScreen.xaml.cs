@@ -3,12 +3,9 @@ using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
 using System;
 using System.IO;
-using System.Security.Cryptography;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using System.Xml.Linq;
 
 namespace CryptoPWMS.Components
 {
@@ -124,7 +121,7 @@ namespace CryptoPWMS.Components
         }
 
         /// <summary>
-        /// 
+        /// Navigates to the signup section of the homescreen.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -141,7 +138,7 @@ namespace CryptoPWMS.Components
         }
 
         /// <summary>
-        /// 
+        /// Navigates to the login section of the homescreen.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

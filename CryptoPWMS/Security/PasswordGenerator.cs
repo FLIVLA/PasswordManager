@@ -20,7 +20,8 @@ namespace CryptoPWMS.Security
      */
 
     /// <summary>
-    /// 
+    /// Used for generating strong passwords, using the user's desired settings
+    /// for the composition of the generated output.
     /// </summary>
     public class PasswordGenerator
     {
@@ -29,89 +30,56 @@ namespace CryptoPWMS.Security
         private const string Digits = "0123456789";                             // Allowed digits.
         private const string Symbols = "!@#$%^&*()_=+[]{}|?";                   // Allowed Symbols.
 
-        private int _length;        // desired length of the password to be generated.
-        private bool _useCaps;      // Boolean representation of whether the generator instance will use upper case letters.
-        private bool _UseDigits;    // Boolean representation of whether the generator instance will use digits.
-        private bool _useSymbols;   // Boolean representation of whether the generator instance will use symbols.
-        private bool _grpChars;     // Boolean representation of whether the generator instance will group chars.
+        public int Length;        // desired length of the password to be generated.
+        public bool UseCaps;      // Boolean representation of whether the generator instance will use upper case letters.
+        public bool UseDigits;    // Boolean representation of whether the generator instance will use digits.
+        public bool UseSymbols;   // Boolean representation of whether the generator instance will use symbols.
+        public bool GrpChars;     // Boolean representation of whether the generator instance will group chars.
 
-        public int Length
-        {
-            get { return _length; }
-            set { _length = value; }
-        }
-
-        public bool UseCaps
-        {
-            get { return _useCaps; }
-            set { _useCaps = value; }
-        }
-
-        public bool UseDigits
-        {
-            get { return _UseDigits; }
-            set { _UseDigits = value; }
-        }
-
-        public bool UseSymbols
-        {
-            get { return _useSymbols; }
-            set { _useSymbols = value; }
-        }
-
-        public bool GrpChars
-        {
-            get { return _grpChars; }
-            set { _grpChars = value; }
-        }
-
-
+        /// <summary>
+        /// Initializes with an password length of 20 chars.
+        /// </summary>
         public PasswordGenerator()
         {
-            _length = 20;
+            Length = 20;
         }
 
         /// <summary>
-        /// 
+        /// Generates a new random password with the current composition settings.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Randomly generated password</returns>
         public string Generate()
         {
-            StringBuilder password = new StringBuilder();
-            string characterSet = LowercaseLetters;
+            StringBuilder password = new StringBuilder();        // new stringbuilder instance for appending random characters.
+            string characterSet = LowercaseLetters;              // Initialize characterset as only lowercase letters as default.
 
-            if (_useCaps)
-                characterSet += UppercaseLetters;
-
-            if (_UseDigits)
-                characterSet += Digits;
-
-            if (_useSymbols)
-                characterSet += Symbols;
+            if (UseCaps) characterSet += UppercaseLetters;       // If UseCaps == true, add Uppercase letters to characterset.
+            if (UseDigits) characterSet += Digits;               // If UseDigits == true, add digit characters to characterset.          
+            if (UseSymbols) characterSet += Symbols;             // If UseSymbols == true, add allowed symbols to characterset.
 
             using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                byte[] randomBytes = new byte[_length];
-                rng.GetBytes(randomBytes);
+                byte[] randomBytes = new byte[Length];                  // initialize new byte array for holding the random bytes.
+                rng.GetBytes(randomBytes);                              // This fills the array with random bytes.
 
-                for (int i = 0; i < _length; i++)
+                for (int i = 0; i < Length; i++)                        // Iterates over the current intended password length
                 {
-                    int index = randomBytes[i] % characterSet.Length;
-                    password.Append(characterSet[index]);
+                    int index = randomBytes[i] % characterSet.Length;   // calculate index based on random byte value
+                    password.Append(characterSet[index]);               // Append the char of the characterset at calculated index to the stringbuilder.
                 }
             }
 
-            if (_grpChars)
+            if (GrpChars)                                          // If character grouping == true
             {
-                int groupSize = 4;
+                int groupSize = 4;                                 // set the group size
                 int passwordLength = password.Length;
-                for (int i = groupSize; i < passwordLength; i += groupSize + 1)
+                for (int i = groupSize; i < passwordLength; i += groupSize + 1)     // iterate the length of the password
                 {
-                    password.Insert(i, "-");
+                    password.Insert(i, "-");                       // insert a hyphen character at i in the stringbuilder
                 }
             }
 
-            return password.ToString();
+            return password.ToString();                             
         }
     }
 }

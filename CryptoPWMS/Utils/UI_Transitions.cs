@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -13,7 +9,7 @@ namespace CryptoPWMS.Utils
         public static void Fade(FrameworkElement eOut, FrameworkElement eIn)
         {
             if (eOut == null || eIn == null)
-                throw new ArgumentNullException("Both fadeOutElement and fadeInElement must not be null.");
+                throw new ArgumentNullException("FADE ERROR");
 
             var duration = TimeSpan.FromSeconds(0.5);
 

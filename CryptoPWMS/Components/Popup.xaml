@@ -25,6 +25,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
+                <TextBlock x:Name="txt_Title" VerticalAlignment="Center" Margin="30,15,0,0" Foreground="{StaticResource txt_gr}" FontSize="16"></TextBlock>
+                
                 <Button x:Name="btn_close" 
                     Width="30" 
                     Foreground="{StaticResource txt_gr}" 

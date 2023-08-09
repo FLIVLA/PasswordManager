@@ -3,7 +3,6 @@ using CryptoPWMS.IO;
 using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -26,14 +25,12 @@ namespace CryptoPWMS.Components
             MenuPairs = new List<(FrameworkElement, FrameworkElement)>()
             {
                 (selectionIndicator_PWLIB, PasswordLibrary_grid),
-                (selectionIndicator_PWADD, AddPassword_grid),
                 (selectionIndicator_PWG, rndpw_grid),
-                (selectionIndicator_Settings, Settings_grid)
             };
             SetPageSelection(0);
         }
 
-        #region ====================== EVENT HANDLERS ======================
+        #region ======================== SIDE MENU BUTTONS ========================
 
         /// <summary>
         /// Shows a form on screen for creating new password records
@@ -43,85 +40,43 @@ namespace CryptoPWMS.Components
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void AddNew_Click(object sender, RoutedEventArgs e)
+        private void btn_menu_addpass_Click(object sender, RoutedEventArgs e)
         {
             var p = new Popup(new NewPasswordForm());               // Construct new modal and child control.
             App.MainWin.blurGrid.Visibility = Visibility.Visible;   // Set visibility of "blur grid".
-            p.ShowDialog();                                         // Show modal as dialog.
+            p.ShowDialog();
         }
-
-        #endregion
-
-        #region ========================== METHODS ==========================
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="p"></param>
-        private void SetPageSelection(int p)
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btn_menu_addgrp_Click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < MenuPairs.Count; i++)
-            {
-                if (i == p)
-                {
-                    MenuPairs[i].Item1.Visibility = Visibility.Visible;
-                    MenuPairs[i].Item2.Visibility = Visibility.Visible;
-                    MenuPairs[i].Item2.IsEnabled = true;
-                }
-                else
-                {
-                    MenuPairs[i].Item1.Visibility = Visibility.Collapsed;
-                    MenuPairs[i].Item2.Visibility = Visibility.Collapsed;
-                    MenuPairs[i].Item2.IsEnabled = false;
-                }
-            }
-        }
-
-        public void ClearMain()
-        {
-            grp_stack.Children.Clear();
-            txt_Generatedpw.Text = string.Empty;
+            var p = new Popup(new NewGroupForm());                  // Construct new modal and child control.
+            App.MainWin.blurGrid.Visibility = Visibility.Visible;   // Set visibility of "blur grid".
+            p.ShowDialog();
         }
 
         /// <summary>
-        /// Creates container tree from password records associated with 
-        /// the user of the current active user id.
+        /// Navigates to the password library page.
         /// </summary>
-        public void FillPasswordData()
-        {
-            var grps = Passwords.Get_PWGroups();                                // Get groups from database
-            var pws = Passwords.GetAll();                                       // Get password records from database (by iser id).
-
-            grps.ForEach(x => grp_stack.Children.Add(new PasswordGroup(x)));    // Add password group containers to vertical stack.            
-            foreach (PasswordGroup grp in grp_stack.Children)                   // Add Passwords to groupcontainers
-            {
-                pws.Where(x => x.Grp_Id == grp.GRP.Id).OrderBy(x => x.Platform).ToList()                                             
-                    .ForEach(pw => grp.pw_stack.Children.Add(new PasswordContainer(grp, pw))); 
-            }
-        }
-
-        #endregion
-
-        #region MENU BTNS
-
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_menu_passwordslib_Click(object sender, RoutedEventArgs e)
         {
             SetPageSelection(0);
         }
 
-        private void btn_menu_addpass_Click(object sender, RoutedEventArgs e)
-        {
-            SetPageSelection(1);
-        }
-
+        /// <summary>
+        /// Navigates to the password generator page.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_menu_generatepass_Click(object sender, RoutedEventArgs e)
         {
-            SetPageSelection(2);
-        }
-
-        private void btn_menu_settings_Click(object sender, RoutedEventArgs e)
-        {
-            SetPageSelection(3);
+            SetPageSelection(1);
         }
 
         private void btn_menu_signout_Click(object sender, RoutedEventArgs e)
@@ -143,8 +98,6 @@ namespace CryptoPWMS.Components
 
         #endregion
 
-        #region PW GENERATOR
-
         /// <summary>
         /// Copies current generated password to the clipboard.
         /// </summary>
@@ -165,10 +118,6 @@ namespace CryptoPWMS.Components
             txt_Generatedpw.Text = PWG.Generate();
         }
 
-        //==================================================================
-        //----------------------- GENERATOR OPTIONS ------------------------
-        //==================================================================
-
         private void rndpwLength_slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             PWG.Length = (int)rndpwLength_slider.Value;
@@ -178,6 +127,8 @@ namespace CryptoPWMS.Components
             }
             txt_Generatedpw.Text = PWG.Generate();
         }
+
+        #region Password Generator options
 
         private void toggle_capital_Checked(object sender, RoutedEventArgs e)
         {
@@ -226,8 +177,28 @@ namespace CryptoPWMS.Components
             PWG.GrpChars = false;
             txt_Generatedpw.Text = PWG.Generate();
         }
-       
+
         #endregion
+
+        #region Main UI Methods
+
+        /// <summary>
+        /// Creates container tree from password records associated with 
+        /// the user of the current active user id.
+        /// </summary>
+        public void FillPasswordData()
+        {
+            grp_stack.Children.Clear();
+            var grps = Passwords.Get_PWGroups();                                // Get groups from database
+            var pws = Passwords.GetAll();                                       // Get password records from database (by iser id).
+
+            grps.ForEach(x => grp_stack.Children.Add(new PasswordGroup(x)));    // Add password group containers to vertical stack.            
+            foreach (PasswordGroup grp in grp_stack.Children)                   // Add Passwords to groupcontainers
+            {
+                pws.Where(x => x.Grp_Id == grp.GRP.Id).OrderBy(x => x.Platform).ToList()
+                    .ForEach(pw => grp.pw_stack.Children.Add(new PasswordContainer(grp, pw)));
+            }
+        }
 
         public void UpdatePasswordGroup(int grpId)
         {
@@ -236,5 +207,36 @@ namespace CryptoPWMS.Components
                 if (grp.GRP.Id == grpId) grp.Update();   
             }
         }
+
+        public void ClearMain()
+        {
+            grp_stack.Children.Clear();
+            txt_Generatedpw.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="p"></param>
+        private void SetPageSelection(int p)
+        {
+            for (int i = 0; i < MenuPairs.Count; i++)
+            {
+                if (i == p)
+                {
+                    MenuPairs[i].Item1.Visibility = Visibility.Visible;
+                    MenuPairs[i].Item2.Visibility = Visibility.Visible;
+                    MenuPairs[i].Item2.IsEnabled = true;
+                }
+                else
+                {
+                    MenuPairs[i].Item1.Visibility = Visibility.Collapsed;
+                    MenuPairs[i].Item2.Visibility = Visibility.Collapsed;
+                    MenuPairs[i].Item2.IsEnabled = false;
+                }
+            }
+        }
+
+        #endregion
     }
 }

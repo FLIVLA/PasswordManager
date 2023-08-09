@@ -1,52 +1,78 @@
 ﻿using CryptoPWMS.IO;
+using CryptoPWMS.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace CryptoPWMS.Components.ModalChildControls
 {
     /// <summary>
-    /// Interaction logic for NewPasswordForm.xaml
+    /// Interaction logic for EditPasswordForm.xaml
     /// </summary>
-    public partial class NewPasswordForm : UserControl
+    public partial class EditPasswordForm : UserControl
     {
         public Window Parent { get; set; }                          // To enable the child of closing the parent modal hosting this.
         private Dictionary<string, int> GrpMap { get; set; }        // Stored key-value pairs (name, ID) of Password groups of the database.
+        private PasswordItem item { get; set; }
+        private int previousGrp;
 
-        public NewPasswordForm()
+        public EditPasswordForm(PasswordItem item)
         {
+            this.item = item;
+            previousGrp = item.Grp_Id;
             InitializeComponent();
+
             var grps = Passwords.Get_PWGroups();                    // Get password groups from database.
             GrpMap = grps.ToDictionary(x => x.Name, x => x.Id);     // Create dictionary of Groups (name, id).
-            
+
             for (int i = 0; i < grps.Count; i++)                    // Add combobox-items from group list (group names).
             {
                 cbo_grp.Items.Add(grps[i].Name);
             }
+
+            cbo_grp.SelectedIndex = item.Grp_Id - 1;
+            txt_platform.Text = item.Platform;
+            txt_URL.Text = item.URL;   
         }
 
         /// <summary>
-        /// On Click, the eventhandler calls the Insert method for the
-        /// Password entity, which inserts new entry in the database.
+        /// Updates the password in the database, and updates the associated
+        /// passwordgroup(s) in the main UI.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btn_create_Click(object sender, RoutedEventArgs e)
+        private void btn_update_Click(object sender, RoutedEventArgs e)
         {
-            string grp = cbo_grp.SelectedItem.ToString();                   // Selected password group.
-            int grpId = GrpMap[grp];                                        // Get the ID of the selected pw-group from map.
-            string platform = txt_platform.Text;                            // platform name.
-            string url = txt_URL.Text;                                      // platform URL.
-            string un = txt_username.Text;                                  // Entered username.
-            string pw = pwbx_password.Password;                             // Entered password.
+            string grp = cbo_grp.SelectedItem.ToString();
+            int grpId = GrpMap[grp];
 
-            if (string.IsNullOrWhiteSpace(txt_URL.Text)) url = "";          // Set to empty string in case of whitespace chars in input field.
+            item.Grp_Id = grpId;
+            item.Platform = txt_platform.Text;
+            item.URL = txt_URL.Text;
+            
+            if (string.IsNullOrWhiteSpace(txt_URL.Text)) item.URL = "";
 
-            Passwords.Insert(grpId, platform, url, un, pw);                 // Insert new password record in the database.
-            App.MainUI.UpdatePasswordGroup(grpId);                          // Update the group container in the MainUI.
-            App.MainWin.blurGrid.Visibility = Visibility.Collapsed;         
-            Parent.Close();                                                 // Close the parent Modal.
+            Passwords.Update(item, txt_username.Text, pwbx_password.Password);
+            
+            App.MainUI.UpdatePasswordGroup(grpId);
+            if (grpId != previousGrp) {
+                App.MainUI.UpdatePasswordGroup(previousGrp);
+            }
+
+            App.MainWin.blurGrid.Visibility = Visibility.Collapsed;
+            Parent.Close();
         }
 
         /// <summary>
@@ -60,13 +86,13 @@ namespace CryptoPWMS.Components.ModalChildControls
         {
             if (IsValidInput())                     // IF VALID INPUT:
             {
-                btn_create.IsEnabled = true;        // Enable create-button.
-                btn_create.Opacity = 1;             // set Opacity to indicate button availability.
+                btn_update.IsEnabled = true;        // Enable update-button.
+                btn_update.Opacity = 1;             // set Opacity to indicate button availability.
             }
             else                                    // IF INPUT IS INVALID:
             {
-                btn_create.IsEnabled = false;       // Disable create-button.
-                btn_create.Opacity = 0.5;           // Set Opacity property of create-button to indicate unavailable state.
+                btn_update.IsEnabled = false;       // Disable update-button.
+                btn_update.Opacity = 0.5;           // Set Opacity property of update-button to indicate unavailable state.
             }
         }
 
@@ -81,13 +107,13 @@ namespace CryptoPWMS.Components.ModalChildControls
         {
             if (IsValidInput())                     // IF VALID INPUT:
             {
-                btn_create.IsEnabled = true;        // Enable create-button.
-                btn_create.Opacity = 1;             // set Opacity to indicate button availability.
+                btn_update.IsEnabled = true;        // Enable update-button.
+                btn_update.Opacity = 1;             // set Opacity to indicate button availability.
             }
             else                                    // IF INPUT IS INVALID:
-            {                                           
-                btn_create.IsEnabled = false;       // Disable create-button.
-                btn_create.Opacity = 0.5;           // Set Opacity property of create-button to indicate unavailable state.
+            {
+                btn_update.IsEnabled = false;       // Disable Update-button.
+                btn_update.Opacity = 0.5;           // Set Opacity property of Update-button to indicate unavailable state.
             }
         }
 
@@ -107,11 +133,6 @@ namespace CryptoPWMS.Components.ModalChildControls
             bool pwsMatch = pwbx_password.Password == pwbx_password_Re_enter.Password;  // User have entered two matching passwords.
 
             return selectedGrp && enteredUn && enteredpw && reEnteredpw && pwsMatch;    // Return values of all conditions combined.
-        }
-
-        private void pwbx_password_Re_enter_PasswordChanged(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
