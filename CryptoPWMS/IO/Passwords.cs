@@ -35,7 +35,7 @@ namespace CryptoPWMS.IO
         /// <returns>The connection string of the database.</returns>
         private static string ConnectionString()
         {
-            return $"Data Source={AppDomain.CurrentDomain.BaseDirectory}\\Database\\{App.Cur_User}.db;";
+            return $"Data Source={Vaults.VaultPath(Vaults.VaultState.Decrypted_Temp, App.Cur_User)}";
         }
 
         #region ============================ GET ============================

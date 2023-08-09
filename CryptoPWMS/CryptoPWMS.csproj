@@ -19,6 +19,7 @@
     <None Remove="img\eye.png" />
     <None Remove="img\folder.png" />
     <None Remove="img\key.png" />
+    <None Remove="img\layeredwaves.png" />
     <None Remove="img\newfolder.png" />
     <None Remove="img\pwlck.png" />
     <None Remove="img\refresh.png" />
@@ -78,6 +79,9 @@
     <Resource Include="img\key.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="img\layeredwaves.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="img\newfolder.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -128,6 +132,9 @@
   <ItemGroup>
     <None Update="Database\pwdb.db">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Vault_Template\vault_template.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

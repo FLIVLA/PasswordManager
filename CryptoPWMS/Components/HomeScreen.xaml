@@ -58,8 +58,19 @@
     
 
     <Grid>
+
+        <Border Margin="1,0,1,1" CornerRadius="10" Opacity="0.4" VerticalAlignment="Bottom" Height="400">
+            <Border.Background>
+                <ImageBrush>
+                    <ImageBrush.ImageSource>
+                        <BitmapImage UriSource="pack://application:,,,/img/layeredwaves.png"/>
+                    </ImageBrush.ImageSource>
+                </ImageBrush>
+            </Border.Background>
+        </Border>
+
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="250"/>
                 <RowDefinition Height="50"/>
@@ -474,7 +485,7 @@
  
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
                             <TextBlock Foreground="DarkGray" HorizontalAlignment="Center" TextAlignment="Center" Margin="20,0,20,0">
-                                <Run>Please enter a master password for your personal vault.</Run><LineBreak/>
+                                <Run>Please enter a master password for your personal vault. Minimum Length of 10 characters.</Run><LineBreak/>
                                 <Run>The password must consist of both upper and lower case letters [Aa-Zz],</Run><LineBreak/>
                                 <Run>at least one digit character [0-9], and one symbol character [$@|^#?+].</Run>
                             </TextBlock>
@@ -518,7 +529,8 @@
                                      FontSize="16" 
                                      Style="{StaticResource transparent_pwbx}"
                                              GotFocus="pwbx_newMasterkey_GotFocus"
-                                             LostFocus="pwbx_newMasterkey_LostFocus"/>
+                                             LostFocus="pwbx_newMasterkey_LostFocus"
+                                             PasswordChanged="pwbx_newMasterkey_PasswordChanged"/>
                             </Grid>
 
                         </StackPanel>
@@ -527,6 +539,7 @@
                                 Grid.Row="2" 
                                 Height="40" 
                                 Width="330" 
+                                IsEnabled="False"
                                 Foreground="Black" 
                                 Background="{StaticResource txt_gr}" 
                                 Opacity="0.7" Style="{StaticResource LoginBtn}" 

@@ -5,6 +5,7 @@ using CryptoPWMS.Utils;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -81,11 +82,9 @@ namespace CryptoPWMS.Components
 
         private void btn_menu_signout_Click(object sender, RoutedEventArgs e)
         {
-            Crypto.EncryptVault(
-                Path.Combine(Vaults.BaseDir, $"{App.Cur_User}.db"),
-                App.DerivedKey
-            );
+            Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
 
+            App.IsAuthenticated = false;
             App.Cur_User = "";
             App.DerivedKey = new byte[0];
             App.Salt = new byte[0];

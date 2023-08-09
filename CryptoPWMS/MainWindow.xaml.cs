@@ -39,12 +39,17 @@ namespace CryptoPWMS
         /// <param name="e"></param>
         private void btn_close_Click(object sender, RoutedEventArgs e)
         {
-            if (App.Cur_User != "")                                     // User ID will be empty string no user is logged in.
+            if (App.Cur_User != "" && App.IsAuthenticated)                                     // User ID will be empty string no user is logged in.
             {
-                Crypto.EncryptVault(                                    // Encrypt the active user's password vault.
-                    Path.Combine(Vaults.BaseDir, $"{App.Cur_User}.db"),
-                    App.DerivedKey
-                );
+                Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
+            }
+            else
+            {
+                var tempFiles = Directory.GetFiles(Vaults.TempDir);
+                foreach (var file in tempFiles)
+                {
+                    File.Delete(file);
+                }
             }
 
             this.Close();

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows;
+using CryptoPWMS.IO;
 using Konscious.Security.Cryptography;
 
 namespace CryptoPWMS.Security
@@ -61,17 +64,19 @@ namespace CryptoPWMS.Security
         /// </summary>
         /// <param name="vaultPath"></param>
         /// <param name="key"></param>
-        public static void EncryptVault(string vaultPath, byte[] key)
+        public static void EncryptVault(string user_vaultname, byte[] key)
         {
-            var encrpath = vaultPath + ".cryptovault";
+            var tempDecr = Vaults.VaultPath(Vaults.VaultState.Decrypted_Temp, user_vaultname);
+            var tempEncr = Vaults.VaultPath(Vaults.VaultState.Encrypted_Temp, user_vaultname);
+            var finalDest = Vaults.VaultPath(Vaults.VaultState.Encrypted, user_vaultname); 
 
             using (var aes = Aes.Create())
             {
                 aes.Key = key;
                 aes.GenerateIV();
 
-                using (var ifs = File.OpenRead(vaultPath))
-                using (var ofs = File.Create(encrpath))
+                using (var ifs = File.OpenRead(tempDecr))
+                using (var ofs = File.Create(tempEncr))
                 {
                     ofs.Write(aes.IV, 0, aes.IV.Length);
 
@@ -81,15 +86,29 @@ namespace CryptoPWMS.Security
                     }
                 }
             }
-            File.Delete(vaultPath);
+
+            File.Copy(tempEncr, finalDest, true);
+            File.Delete(tempDecr);
+            File.Delete(tempEncr);
         }
 
-        public static void DecryptVault(string encryptedVaultPath, byte[] key)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user_vaultname"></param>
+        /// <param name="key"></param>
+        public static void DecryptVault(string user_vaultname, byte[] key)
         {
-            var originalVaultPath = encryptedVaultPath.Replace(".cryptovault", ""); // Remove custom extension
+            if (!Directory.Exists(Vaults.TempDir)) Directory.CreateDirectory(Vaults.TempDir);
 
-            using (var ifs = File.OpenRead(encryptedVaultPath))
-            using (var ofs = File.Create(originalVaultPath)) // Create decrypted file without the custom extension
+            var encr = Vaults.VaultPath(Vaults.VaultState.Encrypted, user_vaultname);
+            var tempEncr = Vaults.VaultPath(Vaults.VaultState.Encrypted_Temp, user_vaultname);
+            var finalDest = Vaults.VaultPath(Vaults.VaultState.Decrypted_Temp, user_vaultname);
+
+            File.Copy(encr, tempEncr);
+
+            using (var ifs = File.OpenRead(tempEncr))
+            using (var ofs = File.Create(finalDest)) // Create decrypted file
             {
                 var aes = Aes.Create();
                 var iv = new byte[aes.BlockSize / 8];
@@ -102,8 +121,6 @@ namespace CryptoPWMS.Security
                     cs.CopyTo(ofs);
                 }
             }
-
-            File.Delete(encryptedVaultPath); // Remove the encrypted file
         }
 
         #endregion
@@ -195,7 +212,7 @@ namespace CryptoPWMS.Security
             int threads = 4;
             int outputLength = 32;
 
-            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(masterPassword)))
+            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(Hash_Argon2(masterPassword, salt))))
             {
                 argon2.Salt = salt;
                 argon2.DegreeOfParallelism = threads;

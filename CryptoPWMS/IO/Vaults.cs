@@ -1,9 +1,5 @@
-﻿using CryptoPWMS.Security;
-using System;
-using System.Data.SQLite;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace CryptoPWMS.IO
@@ -22,72 +18,52 @@ namespace CryptoPWMS.IO
     /// </summary>
     internal static class Vaults
     {
+        public enum VaultState { Encrypted, Encrypted_Temp, Decrypted_Temp }
+
         public static readonly string BaseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database");
+        public static readonly string TemplateDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Vault_Template");
+        public static readonly string TempDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Temp");
+
+        public static string VaultPath(VaultState state, string current_user)
+        {
+            switch (state)
+            {
+                case VaultState.Encrypted:
+                    return Path.Combine(BaseDir, current_user + ".db.cryptovault");
+                
+                case VaultState.Encrypted_Temp:
+                    return Path.Combine(TempDir, current_user + ".db.cryptovault");
+
+                case VaultState.Decrypted_Temp:
+                    return Path.Combine(TempDir, current_user + ".db");
+                
+                default: return string.Empty;
+            }
+        }
 
         /// <summary>
         /// Creates a new vault instance in the application base directory.
-        /// On file creation the DDL command is executed to create necessary
-        /// tables for password vault.
+        /// Containing the necessary tables for password vault.
         /// </summary>
         /// <param name="dbName"></param>
         /// <param name="masterPassword"></param>
         public static void Create(string dbName)
         {
-            var conStr = $"Data Source={BaseDir}\\{dbName}";
+            if (!Directory.Exists(TempDir)) Directory.CreateDirectory(TempDir);
 
-            if (File.Exists(Path.Combine(BaseDir, dbName))) {
+            if (File.Exists(Path.Combine(BaseDir, dbName + ".db"))) {
                 MessageBox.Show("Database of that name already exist.");
                 return;
             }
-
-            using (var fs = new FileStream(Path.Combine(BaseDir, dbName), FileMode.Create)) { 
-                fs.Close();
-            }
-
-            using (var con = new SQLiteConnection(conStr))
+            try
             {
-                try {
-                    con.Open();
-                    var cmd = new SQLiteCommand(con) {
-                        CommandText =
-
-                            "CREATE TABLE PasswordGroup (" +
-                            "Id INTEGER NOT NULL UNIQUE," +
-                            "Name TEXT NOT NULL UNIQUE," +
-                            "PRIMARY KEY(Id AUTOINCREMENT));" +
-
-                            "CREATE TABLE Password (" +
-                            "Id INTEGER NOT NULL UNIQUE," +
-                            "Grp_Id INTEGER NOT NULL," +
-                            "Platform TEXT NOT NULL," +
-                            "URL TEXT," +
-                            "Username BLOB NOT NULL," +
-                            "Password BLOB NOT NULL," +
-                            "Key BLOB NOT NULL," +
-                            "Salt BLOB NOT NULL," +
-                            "IV BLOB NOT NULL," +
-                            "LastUpdated TEXT NOT NULL," +
-                            "FOREIGN KEY(Grp_Id) REFERENCES PasswordGroup(Id)," +
-                            "PRIMARY KEY(Id AUTOINCREMENT));" +
-
-                            "INSERT INTO PasswordGroup (Name) VALUES " +
-                            "('Social Media')," +
-                            "('Streaming Services')," +
-                            "('Email Accounts')," +
-                            "('Work & Productivity')," +
-                            "('Other')"
-                    };
-
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                    con.Close();
-                    return;
-                }
-                finally { con.Close(); }
+                string template = Path.Combine(TemplateDir, "vault_template.db");
+                string newVault = Path.Combine(TempDir, dbName + ".db");
+                File.Copy(template, newVault);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
     }

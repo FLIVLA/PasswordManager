@@ -3,6 +3,7 @@ using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
@@ -54,15 +55,26 @@ namespace CryptoPWMS.Components
 
             try
             {
-                Crypto.DecryptVault(
-                    Path.Combine(Vaults.BaseDir, $"{App.Cur_User}.db.cryptovault"), 
-                    App.DerivedKey
-                );
-
+                Crypto.DecryptVault(App.Cur_User, App.DerivedKey);
+                App.IsAuthenticated = true;
                 App.MainUI.FillPasswordData();
                 UI_Transitions.Fade(this, App.MainUI);
+                ResetLoginSection();
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); return; }
+            catch { 
+                MessageBox.Show("Invalid key!");
+                var tempFiles = Directory.GetFiles(Vaults.TempDir);
+                foreach (var file in tempFiles)
+                {
+                    File.Delete(file);
+                }
+                if (App.HomeScreen.Visibility == Visibility.Visible
+                    && App.HomeScreen.form_login.Visibility == Visibility.Visible)
+                {
+                    App.HomeScreen.ResetLoginSection();
+                }
+                return;
+            }
         }
 
         /// <summary>
@@ -75,20 +87,24 @@ namespace CryptoPWMS.Components
             string username = txt_newUsername.Text;
             string password = pwbx_newPassword.Password;
 
-            Users.Insert(username, password);                   // Insert new user in the user database.
-            string un = Users.GetUsername(username, password);
-            if (un != "")
+            bool res = Users.Insert(username, password);            // Insert new user in the user database.
+            if (res)
             {
-                App.Cur_User = un;                              // Set current user_Id in Application.
-                Vaults.Create($"{un}.db");                      // Create new vault instance for the user.
-                
-                UI_Transitions.Fade(                            // Navigate to masterkey form.
-                    createAccount_credentialsForm, 
-                    createAccount_masterkeyForm);
-            }
+                string un = Users.GetUsername(username, password);
+                if (un != "")
+                {
+                    App.Cur_User = un;                              // Set current user_Id in Application.
+                    Vaults.Create(un);                              // Create new vault instance for the user.
 
-            txt_newUsername.Text = string.Empty;                // Empty the user input (username and password).
-            pwbx_newPassword.Password = string.Empty;
+                    UI_Transitions.Fade(                            // Navigate to masterkey form.
+                        createAccount_credentialsForm,
+                        createAccount_masterkeyForm);
+                }
+
+                txt_newUsername.Text = string.Empty;                // Empty the user input (username and password).
+                pwbx_newPassword.Password = string.Empty;
+            }
+            else ResetCreateAccountForm();
         }
 
         /// <summary>
@@ -102,13 +118,12 @@ namespace CryptoPWMS.Components
             byte[] derivedKey = Crypto.DeriveKey(mp, App.Salt);
             App.DerivedKey = derivedKey;
 
-            Crypto.EncryptVault(
-                Path.Combine(Vaults.BaseDir, $"{App.Cur_User}.db"), 
-                App.DerivedKey
-            );
+            Crypto.EncryptVault(App.Cur_User, App.DerivedKey);
 
+            ResetLoginSection();
             var nav_sb = FindResource("sb_navto_login") as Storyboard;
             nav_sb.Begin();
+            ResetCreateAccountForm();
 
             txt_username.IsEnabled = true;
             pwbx_password.IsEnabled = true;
@@ -135,6 +150,10 @@ namespace CryptoPWMS.Components
 
             txt_username.Text = string.Empty;
             pwbx_password.Password = string.Empty;
+
+            placeholder_username.Visibility = Visibility.Visible;
+            placeholder_pw.Visibility = Visibility.Visible;
+            placeholder_mk.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -152,21 +171,51 @@ namespace CryptoPWMS.Components
 
             txt_newUsername.Text = string.Empty;
             pwbx_newPassword.Password = string.Empty;
+
+            placeholder_newusername.Visibility = Visibility.Visible;
+            placeholder_newpw.Visibility = Visibility.Visible;
+            placeholder_newmk.Visibility = Visibility.Visible;
         }
 
         public void ResetLoginSection()
         {
-            txt_username.IsEnabled = true;
-            pwbx_password.IsEnabled = true;
+            UI_Transitions.Fade(login_masterkeyForm, login_credentialsForm);
+            txt_username.Text = string.Empty;
+            pwbx_password.Password = string.Empty;
+            pwbx_masterkey.Password = string.Empty;
+            placeholder_username.Visibility = Visibility.Visible;
+            placeholder_pw.Visibility = Visibility.Visible;
+            placeholder_mk.Visibility = Visibility.Visible;
+        }
 
-            txt_newUsername.IsEnabled = false;
-            pwbx_newPassword.IsEnabled = false;
-
+        public void ResetCreateAccountForm()
+        {
+            UI_Transitions.Fade(createAccount_masterkeyForm, createAccount_credentialsForm);
             txt_newUsername.Text = string.Empty;
             pwbx_newPassword.Password = string.Empty;
+            pwbx_newMasterkey.Password = string.Empty;
+            placeholder_newusername.Visibility = Visibility.Visible;
+            placeholder_newpw.Visibility = Visibility.Visible;
+            placeholder_newmk.Visibility = Visibility.Visible;
+        }
+
+        private bool ValidateMasterKey(string mk)
+        {
+            string upperLowerPattern = @"^(?=.*[a-z])(?=.*[A-Z])";
+            string digitPattern = @"(?=.*\d)";
+            string symbolPattern = @"(?=.*[$@|^#?+])";
+            string lengthPattern = @".{10,}"; // Minimum length of 10 characters
+            string combinedPattern = upperLowerPattern + digitPattern + symbolPattern + lengthPattern;
+
+            return Regex.IsMatch(mk, combinedPattern);
         }
 
         #region ============================ FOCUS ==========================
+
+        /* GotFocus and LostFocus event handlers for all text fields of the 
+         * homescreen. handles visibility state of placeholder elements based
+         * on the active control and its current value.
+         */
 
         private void pwbx_password_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -246,6 +295,21 @@ namespace CryptoPWMS.Components
             }
         }
 
+
         #endregion
+
+        private void pwbx_newMasterkey_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (ValidateMasterKey(pwbx_newMasterkey.Password))
+            {
+                btn_chooseNewMasterKey.IsEnabled = true;
+                btn_chooseNewMasterKey.Opacity = 1.0;
+            }
+            else
+            {
+                btn_chooseNewMasterKey.IsEnabled = false;
+                btn_chooseNewMasterKey.Opacity = 0.7;
+            }
+        }
     }
 }

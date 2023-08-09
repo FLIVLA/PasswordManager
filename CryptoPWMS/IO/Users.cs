@@ -35,7 +35,7 @@ namespace CryptoPWMS.IO
         /// </summary>
         /// <param name="username">Username of the new user account (plaintext).</param>
         /// <param name="password">Password of the new user account (plaintext).</param>
-        public static void Insert(string username, string password)
+        public static bool Insert(string username, string password)
         {
             var con = new SQLiteConnection(ConnectionString());
             try
@@ -54,8 +54,9 @@ namespace CryptoPWMS.IO
                 cmd.Parameters.AddWithValue(@"Password", Crypto.Hash_Argon2(password, salt));   // Sets parameter value of 'Password' to a hashed representation of the input value.
                 cmd.Parameters.AddWithValue(@"Salt", salt);
                 cmd.ExecuteNonQuery();                                                          // Executes the command on the database.
+                return true;
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message); }
+            catch (Exception ex) { MessageBox.Show(ex.Message); return false; }
             finally { con.Close(); }                                                            // Ensures that the database connection is closed.
         }
 
