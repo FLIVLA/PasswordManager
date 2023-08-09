@@ -6,13 +6,16 @@ namespace CryptoPWMS.Components
 {
     /// <summary>
     /// Interaction logic for Popup.xaml
+    /// Base pop-up modal, for hosting different form controls etc.
     /// </summary>
     public partial class Popup : Window
     {
         /// <summary>
-        /// 
+        /// Initializes the window with the given child usercontrol.
+        /// Based on the type of child control, the width and height
+        /// properties of the windows are adjusted accordingly.
         /// </summary>
-        /// <param name="child"></param>
+        /// <param name="child">Child control of any type </param>
         public Popup(UserControl child)
         {
             Owner = App.MainWin;                                // Sets the owner of the modal (to enable centerOwner startup location).
@@ -30,6 +33,12 @@ namespace CryptoPWMS.Components
                 Width = 500; Height = 250;                          // Set height and width properties based on specific child control type.
                 var delScr = child as DeleteScreen;
                 delScr.Parent = this;                               // Set parent of child to this (to enable ability to close this from child)
+            }
+
+            else if (child.GetType() == typeof(UnlockForm)) {   // Specific property settings for child control of type UnlockForm.
+                Width = 500; Height = 260;                      // Set height and width properties based on specific child control type.
+                var unlockScr = child as UnlockForm;
+                unlockScr.Parent = this;                        // Set parent of child to this (to enable ability to close this from child)
             }
         }
 

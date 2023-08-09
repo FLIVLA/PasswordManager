@@ -34,17 +34,16 @@ namespace CryptoPWMS.Components.ModalChildControls
         /// <param name="e"></param>
         private void btn_create_Click(object sender, RoutedEventArgs e)
         {
-            //------------- STORE INPUT --------------
-            var grp = cbo_grp.SelectedItem.ToString();                      // Selected password group.
-            var grpId = GrpMap[grp];                                        // Get the ID of the selected pw-group from map.
-            var platform = txt_platform.Text;                               // platform name.
-            var url = txt_URL.Text;                                         // platform URL.
-            var un = txt_username.Text;                                     // Entered username.
-            var pw = pwbx_password.Password;                                // Entered password.
+            string grp = cbo_grp.SelectedItem.ToString();                   // Selected password group.
+            int grpId = GrpMap[grp];                                        // Get the ID of the selected pw-group from map.
+            string platform = txt_platform.Text;                            // platform name.
+            string url = txt_URL.Text;                                      // platform URL.
+            string un = txt_username.Text;                                  // Entered username.
+            string pw = pwbx_password.Password;                             // Entered password.
 
             if (string.IsNullOrWhiteSpace(txt_URL.Text)) url = "";          // Set to empty string in case of whitespace chars in input field.
 
-            Passwords.Insert(App.Cur_Uid, grpId, platform, url, un, pw);    // Insert new password record in the database.
+            Passwords.Insert(grpId, platform, url, un, pw);                 // Insert new password record in the database.
             App.MainUI.UpdatePasswordGroup(grpId);                          // Update the group container in the MainUI.
             App.MainWin.blurGrid.Visibility = Visibility.Collapsed;         
             Parent.Close();                                                 // Close the parent Modal.

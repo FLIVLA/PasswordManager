@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace CryptoPWMS.Components
@@ -20,7 +19,8 @@ namespace CryptoPWMS.Components
         }
 
         /// <summary>
-        /// 
+        /// Expands/Collapses the container, making all child elements of the
+        /// vartical stack contained in the subgrid visible/invisible to the user.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

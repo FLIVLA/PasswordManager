@@ -7,6 +7,56 @@
              mc:Ignorable="d" 
              d:DesignHeight="520" d:DesignWidth="800">
 
+    <UserControl.Resources>
+
+        <Storyboard x:Key="sb_navto_login">
+            <DoubleAnimation Storyboard.TargetName="form_signup"
+                             Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             BeginTime="0:0:0.2"
+                             Duration="0:0:0.4"
+                             From="0" To="450" />
+            <DoubleAnimation Storyboard.TargetName="form_login"
+                             Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             BeginTime="0:0:0.2"
+                             Duration="0:0:0.4"
+                             From="-450" To="0" />
+            <DoubleAnimation Storyboard.TargetName="form_signup"
+                             Storyboard.TargetProperty="Opacity"
+                             BeginTime="0:0:0.1"
+                             Duration="0:0:0.4"
+                             From="1" To="0" />
+            <DoubleAnimation Storyboard.TargetName="form_login"
+                             Storyboard.TargetProperty="Opacity"
+                             BeginTime="0:0:0.3"
+                             Duration="0:0:0.4"
+                             From="0" To="1" />
+        </Storyboard>
+
+        <Storyboard x:Key="sb_navto_signup">
+            <DoubleAnimation Storyboard.TargetName="form_login"
+                             Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             BeginTime="0:0:0.2"
+                             Duration="0:0:0.4"
+                             From="0" To="450" />
+            <DoubleAnimation Storyboard.TargetName="form_signup"
+                             Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
+                             BeginTime="0:0:0.2"
+                             Duration="0:0:0.4"
+                             From="-450" To="0" />
+            <DoubleAnimation Storyboard.TargetName="form_login"
+                             Storyboard.TargetProperty="Opacity"
+                             BeginTime="0:0:0.1"
+                             Duration="0:0:0.4"
+                             From="1" To="0" />
+            <DoubleAnimation Storyboard.TargetName="form_signup"
+                             Storyboard.TargetProperty="Opacity"
+                             BeginTime="0:0:0.3"
+                             Duration="0:0:0.4"
+                             From="0" To="1" />
+        </Storyboard>
+    </UserControl.Resources>
+    
+
     <Grid>
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
             
@@ -39,15 +89,17 @@
                     <Grid.RenderTransform>
                         <TranslateTransform X="0" Y="0"/>
                     </Grid.RenderTransform>
+                    
+                    <Grid x:Name="login_credentialsForm">
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="70"/>
-                        <RowDefinition Height="20"/>
-                    </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" 
+                        <Border Grid.Row="0" 
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
@@ -55,14 +107,14 @@
                             HorizontalAlignment="Center" 
                             Width="330">
 
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="20" 
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" 
                                               ShadowDepth="5" 
                                               Color="Aqua"/>
-                        </Border.Effect>
-                    </Border>
+                            </Border.Effect>
+                        </Border>
 
-                    <Border Grid.Row="1" 
+                        <Border Grid.Row="1" 
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
@@ -70,22 +122,22 @@
                             HorizontalAlignment="Center" 
                             Width="330">
 
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="20" 
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" 
                                               ShadowDepth="5" 
                                               Color="Aqua"/>
-                        </Border.Effect>
-                    </Border>
+                            </Border.Effect>
+                        </Border>
 
-                    <StackPanel Grid.Row="0" 
+                        <StackPanel Grid.Row="0" 
                                 Orientation="Horizontal" 
                                 HorizontalAlignment="Center" 
                                 Margin="20,0,0,0">
 
-                        <Image Source="pack://application:,,,/img/user.png" 
+                            <Image Source="pack://application:,,,/img/user.png" 
                                Height="25"/>
 
-                        <TextBox x:Name="txt_username" 
+                            <TextBox x:Name="txt_username" 
                                  Grid.Row="2" 
                                  Width="300" 
                                  Height="28" 
@@ -93,25 +145,25 @@
                                  Margin="10,0,0,0" 
                                  Style="{StaticResource transparent_txbx}"/>
 
-                    </StackPanel>
+                        </StackPanel>
 
-                    <StackPanel Grid.Row="1" 
+                        <StackPanel Grid.Row="1" 
                                 Orientation="Horizontal" 
                                 HorizontalAlignment="Center" 
                                 Margin="20,0,0,0">
 
-                        <Image Source="pack://application:,,,/img/key.png" 
+                            <Image Source="pack://application:,,,/img/key.png" 
                                Height="25"/>
 
-                        <PasswordBox x:Name="pwbx_password" Grid.Row="3" 
+                            <PasswordBox x:Name="pwbx_password" Grid.Row="3" 
                                      Width="300" 
                                      Height="28" 
                                      Margin="10,0,0,0" 
                                      FontSize="16" 
                                      Style="{StaticResource transparent_pwbx}"/>
-                    </StackPanel>
+                        </StackPanel>
 
-                    <Button x:Name="btn_Login" 
+                        <Button x:Name="btn_Login" 
                             Grid.Row="2" 
                             Height="40" 
                             Width="330" 
@@ -124,43 +176,98 @@
                             FontSize="18" 
                             Click="btn_Login_Click"/>
 
-                    <Button x:Name="btn_navToSignup" 
+                        <Button x:Name="btn_navToSignup" 
                             Grid.Row="3" Content="Create Account" 
                             FontFamily="Consolas" 
                             Style="{StaticResource TextBtn}" 
                             Foreground="{StaticResource txt_gr}" 
                             Click="btn_navToSignup_Click">
 
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.Click">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="form_login"
                                                          Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                                          BeginTime="0:0:0.2"
                                                          Duration="0:0:0.4"
                                                          From="0" To="450" />
-                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                            <DoubleAnimation Storyboard.TargetName="form_signup"
                                                          Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                                          BeginTime="0:0:0.2"
                                                          Duration="0:0:0.4"
                                                          From="-450" To="0" />
-                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                            <DoubleAnimation Storyboard.TargetName="form_login"
                                                          Storyboard.TargetProperty="Opacity"
                                                          BeginTime="0:0:0.1"
                                                          Duration="0:0:0.4"
                                                          From="1" To="0" />
-                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                            <DoubleAnimation Storyboard.TargetName="form_signup"
                                                          Storyboard.TargetProperty="Opacity"
                                                          BeginTime="0:0:0.3"
                                                          Duration="0:0:0.4"
                                                          From="0" To="1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Button.Triggers>
 
-                    </Button>
+                        </Button>
+                    </Grid>
+
+                    <Grid x:Name="login_masterkeyForm" IsEnabled="False" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="1" 
+                            CornerRadius="10" 
+                            Margin="0,8,0,8" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource txt_gr}" 
+                            HorizontalAlignment="Center" 
+                            Width="330">
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" 
+                                              ShadowDepth="5" 
+                                              Color="Aqua"/>
+                            </Border.Effect>
+                        </Border>
+
+                        <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="20,0,0,0">
+
+                            <Image Source="pack://application:,,,/img/app.png" 
+                               Height="25"/>
+
+                            <PasswordBox x:Name="pwbx_masterkey" Grid.Row="3" 
+                                     Width="300" 
+                                     Height="28" 
+                                     Margin="10,0,0,0" 
+                                     FontSize="16" 
+                                     Style="{StaticResource transparent_pwbx}"/>
+                        </StackPanel>
+
+                        <Button x:Name="btn_DecryptVault" 
+                                Grid.Row="2" 
+                                Height="40" 
+                                Width="330" 
+                                Foreground="Black" 
+                                Background="{StaticResource txt_gr}" 
+                                Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                                Content="Unlock Vault" 
+                                FontFamily="Consolas" 
+                                FontWeight="ExtraBold" 
+                                FontSize="18" 
+                                Click="btn_DecryptVault_Click"/>
+                    </Grid>
+
+                    
 
                 </Grid>
                 <!--#endregion-->
@@ -171,14 +278,15 @@
                         <TranslateTransform X="-450" Y="0"/>
                     </Grid.RenderTransform>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="55"/>
-                        <RowDefinition Height="70"/>
-                        <RowDefinition Height="20"/>
-                    </Grid.RowDefinitions>
+                    <Grid x:Name="createAccount_credentialsForm">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" 
+                        <Border Grid.Row="0" 
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
@@ -186,14 +294,14 @@
                             HorizontalAlignment="Center" 
                             Width="330">
 
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="20" 
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" 
                                               ShadowDepth="5" 
                                               Color="Aqua"/>
-                        </Border.Effect>
-                    </Border>
+                            </Border.Effect>
+                        </Border>
 
-                    <Border Grid.Row="1" 
+                        <Border Grid.Row="1" 
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
@@ -201,22 +309,22 @@
                             HorizontalAlignment="Center" 
                             Width="330">
 
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="20" 
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" 
                                               ShadowDepth="5" 
                                               Color="Aqua"/>
-                        </Border.Effect>
-                    </Border>
+                            </Border.Effect>
+                        </Border>
 
-                    <StackPanel Grid.Row="0" 
+                        <StackPanel Grid.Row="0" 
                                 Orientation="Horizontal" 
                                 HorizontalAlignment="Center" 
                                 Margin="20,0,0,0">
 
-                        <Image Source="pack://application:,,,/img/user.png" 
+                            <Image Source="pack://application:,,,/img/user.png" 
                                Height="25"/>
 
-                        <TextBox x:Name="txt_newUsername" 
+                            <TextBox x:Name="txt_newUsername" 
                                  Grid.Row="2" 
                                  Width="300" 
                                  Height="28" 
@@ -224,25 +332,25 @@
                                  Margin="10,0,0,0" 
                                  Style="{StaticResource transparent_txbx}"/>
 
-                    </StackPanel>
+                        </StackPanel>
 
-                    <StackPanel Grid.Row="1" 
+                        <StackPanel Grid.Row="1" 
                                 Orientation="Horizontal" 
                                 HorizontalAlignment="Center" 
                                 Margin="20,0,0,0">
 
-                        <Image Source="pack://application:,,,/img/key.png" 
+                            <Image Source="pack://application:,,,/img/key.png" 
                                Height="25"/>
 
-                        <PasswordBox x:Name="pwbx_newPassword" Grid.Row="3" 
+                            <PasswordBox x:Name="pwbx_newPassword" Grid.Row="3" 
                                      Width="300" 
                                      Height="28" 
                                      Margin="10,0,0,0" 
                                      FontSize="16" 
                                      Style="{StaticResource transparent_pwbx}"/>
-                    </StackPanel>
+                        </StackPanel>
 
-                    <Button x:Name="btn_signup" 
+                        <Button x:Name="btn_signup" 
                             Grid.Row="2" 
                             Height="40" 
                             Width="330" 
@@ -255,43 +363,106 @@
                             FontSize="18" 
                             Click="btn_signup_Click"/>
 
-                    <Button x:Name="btn_navToLogin" 
+                        <Button x:Name="btn_navToLogin" 
                             Grid.Row="3" Content="Login" 
                             FontFamily="Consolas" 
                             Style="{StaticResource TextBtn}" 
                             Foreground="{StaticResource txt_gr}" 
                             Click="btn_navToLogin_Click">
 
-                        <Button.Triggers>
-                            <EventTrigger RoutedEvent="Button.Click">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                            <Button.Triggers>
+                                <EventTrigger RoutedEvent="Button.Click">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="form_signup"
                                                          Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                                          BeginTime="0:0:0.2"
                                                          Duration="0:0:0.4"
                                                          From="0" To="450" />
-                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                            <DoubleAnimation Storyboard.TargetName="form_login"
                                                          Storyboard.TargetProperty="RenderTransform.(TranslateTransform.X)"
                                                          BeginTime="0:0:0.2"
                                                          Duration="0:0:0.4"
                                                          From="-450" To="0" />
-                                        <DoubleAnimation Storyboard.TargetName="form_signup"
+                                            <DoubleAnimation Storyboard.TargetName="form_signup"
                                                          Storyboard.TargetProperty="Opacity"
                                                          BeginTime="0:0:0.1"
                                                          Duration="0:0:0.4"
                                                          From="1" To="0" />
-                                        <DoubleAnimation Storyboard.TargetName="form_login"
+                                            <DoubleAnimation Storyboard.TargetName="form_login"
                                                          Storyboard.TargetProperty="Opacity"
                                                          BeginTime="0:0:0.3"
                                                          Duration="0:0:0.4"
                                                          From="0" To="1" />
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Button.Triggers>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Button.Triggers>
 
-                    </Button>
+                        </Button>
+                    </Grid>
+
+                    <Grid x:Name="createAccount_masterkeyForm" IsEnabled="False" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="55"/>
+                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+ 
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
+                            <TextBlock Foreground="DarkGray" HorizontalAlignment="Center" TextAlignment="Center" Margin="20,0,20,0">
+                                <Run>Please enter a master password for your personal vault.</Run><LineBreak/>
+                                <Run>The password must consist of both upper and lower case letters [Aa-Zz],</Run><LineBreak/>
+                                <Run>at least one digit character [0-9], and one symbol character [$@|^#?+].</Run>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <Border Grid.Row="1" 
+                            CornerRadius="10" 
+                            Margin="0,8,0,8" 
+                            BorderThickness="1" 
+                            BorderBrush="{StaticResource txt_gr}" 
+                            HorizontalAlignment="Center" 
+                            Width="330">
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" 
+                                              ShadowDepth="5" 
+                                              Color="Aqua"/>
+                            </Border.Effect>
+                        </Border>
+
+                        <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Margin="20,0,0,0">
+
+                            <Image Source="pack://application:,,,/img/app.png" 
+                               Height="25"/>
+
+                            <PasswordBox x:Name="pwbx_newMasterkey" Grid.Row="3" 
+                                     Width="300" 
+                                     Height="28" 
+                                     Margin="10,0,0,0" 
+                                     FontSize="16" 
+                                     Style="{StaticResource transparent_pwbx}"/>
+                        </StackPanel>
+
+                        <Button x:Name="btn_chooseNewMasterKey" 
+                                Grid.Row="2" 
+                                Height="40" 
+                                Width="330" 
+                                Foreground="Black" 
+                                Background="{StaticResource txt_gr}" 
+                                Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                                Content="Create Vault Key" 
+                                FontFamily="Consolas" 
+                                FontWeight="ExtraBold" 
+                                FontSize="18" 
+                                Click="btn_chooseNewMasterKey_Click"/>
+                    </Grid>
+                 
                 </Grid>
                 <!--#endregion-->
 

@@ -1,6 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
+using Konscious.Security.Cryptography;
+using Scrypt;
 
 namespace CryptoPWMS.Security
 {
@@ -20,6 +24,8 @@ namespace CryptoPWMS.Security
     /// </summary>
     internal static class Crypto
     {
+        #region ========================= GENERATOR METHODS =========================
+
         /// <summary>
         /// Generates random cryptographic key using the Advanced Encryption Standard (AES) algorithm.
         /// </summary>
@@ -47,82 +53,159 @@ namespace CryptoPWMS.Security
             return salt;
         }
 
+        #endregion
+
+        #region =========================== VAULT METHODS ===========================
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="vaultPath"></param>
         /// <param name="key"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
-        public static byte[] Encrypt_AES(byte[] data, byte[] key, byte[] salt)
+        public static void EncryptVault(string vaultPath, byte[] key)
         {
+            var encrpath = vaultPath + ".cryptovault";
+
             using (var aes = Aes.Create())
             {
-                aes.KeySize = 256;                              // Set the key size to 256-bit
-                aes.Key = key;                                  
-                aes.Mode = CipherMode.CBC;
+                aes.Key = key;
                 aes.GenerateIV();
-                var iv = aes.IV;
 
-                // COMBINE WITH SALT:
-                var w_Salt = new byte[data.Length + salt.Length];
-                data.CopyTo(w_Salt, 0);
-                salt.CopyTo(w_Salt, data.Length);
-
-                using (var encryptor = aes.CreateEncryptor())
-                using (var ms = new System.IO.MemoryStream())
+                using (var ifs = File.OpenRead(vaultPath))
+                using (var ofs = File.Create(encrpath))
                 {
-                    ms.Write(iv, 0, iv.Length);
-                    using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+                    ofs.Write(aes.IV, 0, aes.IV.Length);
+
+                    using (var cs = new CryptoStream(ofs, aes.CreateEncryptor(), CryptoStreamMode.Write))
                     {
-                        cs.Write(w_Salt, 0, w_Salt.Length);
-                        cs.FlushFinalBlock();
-                        return ms.ToArray();
+                        ifs.CopyTo(cs);
                     }
                 }
             }
+            File.Delete(vaultPath);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="encrData"></param>
-        /// <param name="key"></param>
-        /// <param name="salt"></param>
-        /// <returns></returns>
-        public static byte[] Decrypt_AES(byte[] encrData, byte[] key, byte[] salt)
+        public static void DecryptVault(string encryptedVaultPath, byte[] key)
         {
-            using (var aes = Aes.Create())
+            var originalVaultPath = encryptedVaultPath.Replace(".cryptovault", ""); // Remove custom extension
+
+            using (var ifs = File.OpenRead(encryptedVaultPath))
+            using (var ofs = File.Create(originalVaultPath)) // Create decrypted file without the custom extension
             {
-                aes.KeySize = 256;
-                aes.Key = key;
-                aes.Mode = CipherMode.CBC;
+                var aes = Aes.Create();
                 var iv = new byte[aes.BlockSize / 8];
-                Array.Copy(encrData, iv, iv.Length);
+                ifs.Read(iv, 0, iv.Length);
+                aes.Key = key;
                 aes.IV = iv;
 
-                using (var decr = aes.CreateDecryptor())
-                using (var ms = new System.IO.MemoryStream())
+                using (var cs = new CryptoStream(ifs, aes.CreateDecryptor(), CryptoStreamMode.Read))
                 {
-                    using (var cs = new CryptoStream(ms, decr, CryptoStreamMode.Write))
+                    cs.CopyTo(ofs);
+                }
+            }
+
+            File.Delete(encryptedVaultPath); // Remove the encrypted file
+        }
+
+        #endregion
+
+        #region =========================== AES METHODS ===========================
+
+        public static byte[] Encrypt_AES(byte[] data, byte[] key, byte[] salt, byte[] iv)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.KeySize = 256;
+                aesAlg.Key = key;
+                aesAlg.IV = iv; // Use the provided IV
+
+                // Use PBKDF2 to derive a key from the given salt and password
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt, 10000, HashAlgorithmName.SHA256);
+                aesAlg.Key = pdb.GetBytes(32);
+
+                // Set the padding mode
+                aesAlg.Padding = PaddingMode.PKCS7;
+
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV))
                     {
-                        cs.Write(encrData, iv.Length, encrData.Length);
-                        cs.FlushFinalBlock();
-                        byte[] decr_wSalt = ms.ToArray();
-                        byte[] decrData = new byte[decr_wSalt.Length - salt.Length];
-                        byte[] decrSalt = new byte[salt.Length];
-
-                        Array.Copy(decr_wSalt, 0, decrData, 0, decrData.Length);
-                        Array.Copy(decr_wSalt, decrData.Length, decrSalt, 0, decrSalt.Length);
-
-                        if (!salt.SequenceEqual(decrSalt)) {
-                            throw new CryptographicException("Invalid salt!");
+                        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                        {
+                            csEncrypt.Write(data, 0, data.Length);
+                            csEncrypt.FlushFinalBlock();
                         }
-
-                        return decrData;
-                    }   
+                    }
+                    return msEncrypt.ToArray();
                 }
             }
         }
+
+        public static byte[] Decrypt_AES(byte[] encryptedData, byte[] key, byte[] salt, byte[] iv)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.KeySize = 256;
+                aesAlg.Key = key;
+                aesAlg.IV = iv; // Use the provided IV
+
+                // Use PBKDF2 to derive a key from the given salt and password
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(key, salt, 10000, HashAlgorithmName.SHA256);
+                aesAlg.Key = pdb.GetBytes(32);
+
+                // Set the padding mode
+                aesAlg.Padding = PaddingMode.PKCS7;
+
+                using (MemoryStream msDecrypt = new MemoryStream(encryptedData))
+                using (ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV))
+                using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                using (MemoryStream msOriginal = new MemoryStream())
+                {
+                    csDecrypt.CopyTo(msOriginal);
+                    return msOriginal.ToArray();
+                }
+            }
+        }
+
+        #endregion
+
+        public static string Hash_Argon2(string password, byte[] salt) 
+        {
+            int itr = 10;
+            int memprySize = 131072;
+            int parallelism = 4;
+
+            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(password)))
+            {
+                argon2.Salt = salt;
+                argon2.DegreeOfParallelism = parallelism;
+                argon2.MemorySize = memprySize;
+                argon2.Iterations = itr;
+
+                byte[] hb = argon2.GetBytes(32);
+                string hex = BitConverter.ToString(hb).Replace("-", "").ToLower();
+
+                return hex;
+            }
+        }
+
+        public static byte[] DeriveKey(string masterPassword, byte[] salt)
+        {
+            int itr = 12;
+            int memorySize = 131072;
+            int threads = 4;
+            int outputLength = 32;
+
+            using (var argon2 = new Argon2id(Encoding.UTF8.GetBytes(masterPassword)))
+            {
+                argon2.Salt = salt;
+                argon2.DegreeOfParallelism = threads;
+                argon2.MemorySize = memorySize;
+                argon2.Iterations = itr;
+
+                return argon2.GetBytes(outputLength);
+            }
+        }
+
     }
 }

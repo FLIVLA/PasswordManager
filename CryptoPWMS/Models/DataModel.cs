@@ -17,6 +17,7 @@
         public int Id { get; set; }                 // Primary key, Autoincrements in DB.
         public string Username { get; set; }        
         public string Password { get; set; }
+        public byte[] salt { get; set; }
     }
 
     /// <summary>
@@ -34,14 +35,14 @@
     public class PasswordItem
     {
         public int Id { get; set; }                 // Primary key, Autoincrements in DB.
-        public int User_Id { get; set; }            // Foreign key - References User.Id.
         public int Grp_Id { get; set; }             // Foreign key - References PasswordGroup.Id.
         public string Platform { get; set; }        
         public string URL { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Key { get; set; }
-        public string salt { get; set; }
+        public byte[] Username { get; set; }
+        public byte[] Password { get; set; }
+        public byte[] Key { get; set; }
+        public byte[] Salt { get; set; }
+        public byte[] IV { get; set; }
         public string LastUpdated { get; set; }
     }
 }

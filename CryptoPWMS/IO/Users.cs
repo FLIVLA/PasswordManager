@@ -40,20 +40,23 @@ namespace CryptoPWMS.IO
             var con = new SQLiteConnection(ConnectionString());
             try
             {
-                con.Open();                                                     // Opens the database connection.
-                var cmd = new SQLiteCommand(con)                                // initializes new SQLite command with the specified connection.
+                con.Open();                                                           // Opens the database connection.
+                var cmd = new SQLiteCommand(con)                                      // initializes new SQLite command with the specified connection.
                 {
-                    CommandText = "INSERT INTO User (Username, Password)" +     // creates command with parameterized commandtext.
-                                  "VALUES (@Username,@Password)"
+                    CommandText = "INSERT INTO User (Username, Password, Salt)" +     // creates command with parameterized commandtext.
+                                  "VALUES (@Username,@Password, @Salt)"
                 };
+
+                byte[] salt = Crypto.GenerateSalt();
+
                 cmd.Prepare();                                                  
-                cmd.Parameters.AddWithValue(@"Username", Hash.ToSHA_256(username));   // Sets parameter value of 'Username' to a hashed representation of the input value.
-                cmd.Parameters.AddWithValue(@"Password", Hash.ToSHA_256(password));   // Sets parameter value of 'Password' to a hashed representation of the input value.
-                cmd.ExecuteNonQuery();                                                // Executes the command on the database.
-                MessageBox.Show("Your new account has been created!");
+                cmd.Parameters.AddWithValue(@"Username", (username));                           // Sets parameter value of 'Username' to input value.
+                cmd.Parameters.AddWithValue(@"Password", Crypto.Hash_Argon2(password, salt));   // Sets parameter value of 'Password' to a hashed representation of the input value.
+                cmd.Parameters.AddWithValue(@"Salt", salt);
+                cmd.ExecuteNonQuery();                                                          // Executes the command on the database.
             }
             catch (Exception ex) { MessageBox.Show(ex.Message); }
-            finally { con.Close(); }                                            // Ensures that the database connection is closed.
+            finally { con.Close(); }                                                            // Ensures that the database connection is closed.
         }
 
         /// <summary>
@@ -65,7 +68,7 @@ namespace CryptoPWMS.IO
         /// </summary>
         /// <param name="username">Username of the account to be verified (plaintext).</param>
         /// <param name="password">Password if the account to be verified (plaintext).</param>
-        private static bool VerifiedUser(string username, string password)
+        public static string GetUsername(string username, string password)
         {
             var con = new SQLiteConnection(ConnectionString());
             try
@@ -73,51 +76,30 @@ namespace CryptoPWMS.IO
                 con.Open();
                 var cmd = new SQLiteCommand(con)
                 {
-                    CommandText = "SELECT COUNT(1) FROM User " +
-                                  "WHERE Username=@Username AND Password=@Password"
+                    CommandText = "SELECT Username, Password, Salt FROM User " +
+                                  "WHERE Username=@Username"
                 };
                 cmd.Prepare();
-                cmd.Parameters.AddWithValue(@"Username", Hash.ToSHA_256(username));  
-                cmd.Parameters.AddWithValue(@"Password", Hash.ToSHA_256(password));
+                cmd.Parameters.AddWithValue(@"Username", username);  
 
-                int res = Convert.ToInt32(cmd.ExecuteScalar());
-                return res == 1;
-            }
-            catch (Exception ex) { MessageBox.Show(ex.Message); return false; }
-            finally { con.Close(); }
-        }
-
-        /// <summary>
-        /// If user is passes the verified function, the user ID will be returned,
-        /// of the user record matching the hashed value representation of 
-        /// plaintext inputs of username and password. 
-        /// </summary>
-        /// <param name="username">Username of the account to be verified and retrieve ID (plaintext).</param>
-        /// <param name="password">Password of the account to be verified and retrieve ID (plaintext).</param>
-        /// <returns></returns>
-        public static int Uid(string username, string password)
-        {
-            if (VerifiedUser(username, password))
-            {
-                var con = new SQLiteConnection(ConnectionString());
-                try
+                using (var reader = cmd.ExecuteReader())
                 {
-                    con.Open();
-                    var cmd = new SQLiteCommand(con)
+                    if (reader.Read())
                     {
-                        CommandText = "SELECT Id FROM User " +
-                                      "WHERE Username=@Username AND Password=@Password"
-                    };
-                    cmd.Prepare();
-                    cmd.Parameters.AddWithValue(@"Username", Hash.ToSHA_256(username));
-                    cmd.Parameters.AddWithValue(@"Password", Hash.ToSHA_256(password));
-                    int res = Convert.ToInt32(cmd.ExecuteScalar());
-                    return res;
+                        string hash = reader.GetString(1);
+                        byte[] salt = (byte[])reader["Salt"];
+                        App.Salt = salt;
+                        string inputHash = Crypto.Hash_Argon2(password, salt);       // Hash input password with Argon2 using the stored salt.
+                        if (hash.Equals(inputHash)) { 
+                            return Crypto.Hash_Argon2(reader.GetString(0), salt);   // return username if hash matches hash of input password hashed with stored salt.
+                        }   
+                    }
+                    else return "";                                                  // If no match of the input username was found in the database.
                 }
-                catch (Exception ex) { MessageBox.Show(ex.Message); return -1; }
-                finally { con.Close(); }
             }
-            return -1;
+            catch (Exception ex) { MessageBox.Show(ex.Message); return ""; }
+            finally { con.Close(); }
+            return "";
         }
     }
 }

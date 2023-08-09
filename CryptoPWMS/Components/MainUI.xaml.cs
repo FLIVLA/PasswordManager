@@ -1,9 +1,10 @@
 ﻿using CryptoPWMS.Components.ModalChildControls;
 using CryptoPWMS.IO;
-using CryptoPWMS.Models;
+using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -89,7 +90,7 @@ namespace CryptoPWMS.Components
         public void FillPasswordData()
         {
             var grps = Passwords.Get_PWGroups();                                // Get groups from database
-            var pws = Passwords.GetByUserId(App.Cur_Uid);                       // Get password records from database (by iser id).
+            var pws = Passwords.GetAll();                                       // Get password records from database (by iser id).
 
             grps.ForEach(x => grp_stack.Children.Add(new PasswordGroup(x)));    // Add password group containers to vertical stack.            
             foreach (PasswordGroup grp in grp_stack.Children)                   // Add Passwords to groupcontainers
@@ -125,6 +126,17 @@ namespace CryptoPWMS.Components
 
         private void btn_menu_signout_Click(object sender, RoutedEventArgs e)
         {
+            Crypto.EncryptVault(
+                Path.Combine(Vaults.BaseDir, $"{App.Cur_User}.db"),
+                App.DerivedKey
+            );
+
+            App.Cur_User = "";
+            App.DerivedKey = new byte[0];
+            App.Salt = new byte[0];
+
+            App.HomeScreen.ResetLoginSection();
+
             UI_Transitions.Fade(this, App.HomeScreen);
             ClearMain();
         }
@@ -133,41 +145,30 @@ namespace CryptoPWMS.Components
 
         #region PW GENERATOR
 
+        /// <summary>
+        /// Copies current generated password to the clipboard.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_copy_rndpw_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(txt_Generatedpw.Text);
         }
 
+        /// <summary>
+        /// Generates new random password with the current settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_Refresh_rndpw_Click(object sender, RoutedEventArgs e)
         {
             txt_Generatedpw.Text = PWG.Generate();
-        }
-
-        private void testgenerator()
-        {
-            const int testDurationInSeconds = 1;
-
-            var uniquePasswords = new HashSet<string>();
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            while (stopwatch.Elapsed.TotalSeconds < testDurationInSeconds)
-            {
-                string password = PWG.Generate();
-                uniquePasswords.Add(password);
-            }
-
-            stopwatch.Stop();
-
-            int uniquePasswordCount = uniquePasswords.Count;
-            Debug.WriteLine(uniquePasswordCount);
         }
 
         //==================================================================
         //----------------------- GENERATOR OPTIONS ------------------------
         //==================================================================
 
-        // LENGTH
         private void rndpwLength_slider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             PWG.Length = (int)rndpwLength_slider.Value;
@@ -178,7 +179,6 @@ namespace CryptoPWMS.Components
             txt_Generatedpw.Text = PWG.Generate();
         }
 
-        // CAPITAL LETTERS
         private void toggle_capital_Checked(object sender, RoutedEventArgs e)
         {
             PWG.UseCaps = true;
@@ -191,7 +191,6 @@ namespace CryptoPWMS.Components
             txt_Generatedpw.Text = PWG.Generate();
         }
 
-        // DIGITS
         private void toggle_usedigits_Checked(object sender, RoutedEventArgs e)
         {
             PWG.UseDigits = true;
@@ -204,7 +203,6 @@ namespace CryptoPWMS.Components
             txt_Generatedpw.Text = PWG.Generate();
         }
 
-        // SYMBOLS
         private void toggle_usesymbols_Checked(object sender, RoutedEventArgs e)
         {
             PWG.UseSymbols = true;
@@ -217,7 +215,6 @@ namespace CryptoPWMS.Components
             txt_Generatedpw.Text = PWG.Generate();
         }
 
-        // GRP CHARS
         private void toggle_grpchars_Checked(object sender, RoutedEventArgs e)
         {
             PWG.GrpChars = true;
@@ -229,11 +226,8 @@ namespace CryptoPWMS.Components
             PWG.GrpChars = false;
             txt_Generatedpw.Text = PWG.Generate();
         }
-
-        
-
+       
         #endregion
-
 
         public void UpdatePasswordGroup(int grpId)
         {

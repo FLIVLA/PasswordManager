@@ -17,7 +17,6 @@ namespace CryptoPWMS.Utils
 
             var duration = TimeSpan.FromSeconds(0.5);
 
-            // Set the initial opacity of the fadeIn element to 0
             eIn.Opacity = 0;
 
             DoubleAnimation fadeInAnimation = new DoubleAnimation(1, duration);
@@ -26,7 +25,6 @@ namespace CryptoPWMS.Utils
                 eIn.IsEnabled = true;
             };
 
-            // Create a DoubleAnimation to fade out the current element
             DoubleAnimation fadeOutAnimation = new DoubleAnimation(0, duration);
             fadeOutAnimation.Completed += (s, e) =>
             {
@@ -36,7 +34,6 @@ namespace CryptoPWMS.Utils
                 eIn.Visibility = Visibility.Visible;
             };
 
-            // Apply the animations to the Opacity property of the elements
             eOut.BeginAnimation(UIElement.OpacityProperty, fadeOutAnimation);
         }
     }

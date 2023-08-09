@@ -1,6 +1,8 @@
 ﻿using CryptoPWMS.Components;
 using CryptoPWMS.IO;
+using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
@@ -17,19 +19,42 @@ namespace CryptoPWMS
             App.MainWin = this;
             App.HomeScreen = Home;
             App.MainUI = Main_ui;
-
         }
 
+        /// <summary>
+        /// Sets the main window state to minimized.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_minimize_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
 
+        /// <summary>
+        /// Re-encrypts the active user's password vault (if there is an active user ID)
+        /// and closes application.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_close_Click(object sender, RoutedEventArgs e)
         {
+            if (App.Cur_User != "")                                     // User ID will be empty string no user is logged in.
+            {
+                Crypto.EncryptVault(                                    // Encrypt the active user's password vault.
+                    Path.Combine(Vaults.BaseDir, $"{App.Cur_User}.db"),
+                    App.DerivedKey
+                );
+            }
+
             this.Close();
         }
 
+        /// <summary>
+        /// Enables the user to drag move the window on screen. 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dragmv_MouseDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();

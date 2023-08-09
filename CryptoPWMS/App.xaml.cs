@@ -1,11 +1,4 @@
 ﻿using CryptoPWMS.Components;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace CryptoPWMS
@@ -15,8 +8,11 @@ namespace CryptoPWMS
     /// </summary>
     public partial class App : Application
     {
-        private static int _cur_uid = -1;
-        public static int Cur_Uid { get => _cur_uid; set => _cur_uid = value; } 
+        private static string _cur_uid = "";
+        private static byte[] _derivedKey;
+        public static string Cur_User { get => _cur_uid; set => _cur_uid = value; }
+        public static byte[] DerivedKey { get => _derivedKey; set => _derivedKey = value; }
+        public static byte[] Salt { get; set; }
 
         #region UI_ELEMENTS
         
