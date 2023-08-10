@@ -55,42 +55,35 @@
                              From="0" To="1" />
         </Storyboard>
     </UserControl.Resources>
-    
+
 
     <Grid>
-
-        <Border Margin="1,0,1,1" CornerRadius="10" Opacity="0.4" VerticalAlignment="Bottom" Height="400">
-            <Border.Background>
-                <ImageBrush>
-                    <ImageBrush.ImageSource>
-                        <BitmapImage UriSource="pack://application:,,,/img/layeredwaves.png"/>
-                    </ImageBrush.ImageSource>
-                </ImageBrush>
-            </Border.Background>
-        </Border>
+        <Image Source="pack://application:,,,/img/binary.png" Opacity="0.2"/>
 
         <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="250"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock x:Name="title_L" 
-                       FontWeight="Heavy" 
+            <Label x:Name="title_L" 
+                   Opacity="0.4"
+                       FontWeight="DemiBold" 
                        FontFamily="Consolas" 
-                       FontSize="16"
+                       FontSize="66"
                        Foreground="{StaticResource txt_gr}" 
                        HorizontalAlignment="Center" 
-                       VerticalAlignment="Top">
-                
-                <TextBlock.Effect>
+                       VerticalAlignment="Center"
+                       >
+                CRYPTO VAULT
+                <Label.Effect>
                     <DropShadowEffect BlurRadius="30" 
                                       ShadowDepth="0" 
                                       Color="Aqua"/>
-                </TextBlock.Effect>
-            </TextBlock>
+                </Label.Effect>
+            </Label>
 
             <!--#region FORMS-->
             <Grid Grid.Row="2">
@@ -115,30 +108,22 @@
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
+                                Opacity="0.7"
                             BorderBrush="{StaticResource txt_gr}" 
+                                Background="#FF1A1A1A"
                             HorizontalAlignment="Center" 
                             Width="330">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" 
-                                              ShadowDepth="5" 
-                                              Color="Aqua"/>
-                            </Border.Effect>
                         </Border>
 
                         <Border Grid.Row="1" 
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
-                            BorderThickness="1" 
+                            BorderThickness="1"
+                                Opacity="0.7"
                             BorderBrush="{StaticResource txt_gr}" 
+                                Background="#FF1A1A1A"
                             HorizontalAlignment="Center" 
                             Width="330">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" 
-                                              ShadowDepth="5" 
-                                              Color="Aqua"/>
-                            </Border.Effect>
                         </Border>
 
                         <StackPanel Grid.Row="0" 
@@ -208,7 +193,7 @@
                             Width="330" 
                             Foreground="Black" 
                             Background="{StaticResource txt_gr}" 
-                            Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                            Style="{StaticResource LoginBtn}" 
                             Content="Login" 
                             FontFamily="Consolas" 
                             FontWeight="ExtraBold" 
@@ -265,15 +250,11 @@
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
+                                Opacity="0.7"
                             BorderBrush="{StaticResource txt_gr}" 
+                                Background="#FF1A1A1A"
                             HorizontalAlignment="Center" 
                             Width="330">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" 
-                                              ShadowDepth="5" 
-                                              Color="Aqua"/>
-                            </Border.Effect>
                         </Border>
 
                         <StackPanel Grid.Row="1" 
@@ -310,7 +291,7 @@
                                 Width="330" 
                                 Foreground="Black" 
                                 Background="{StaticResource txt_gr}" 
-                                Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                                Style="{StaticResource LoginBtn}" 
                                 Content="Unlock Vault" 
                                 FontFamily="Consolas" 
                                 FontWeight="ExtraBold" 
@@ -341,30 +322,22 @@
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
+                                Opacity="0.7"
                             BorderBrush="{StaticResource txt_gr}" 
+                                Background="#FF1A1A1A"
                             HorizontalAlignment="Center" 
                             Width="330">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" 
-                                              ShadowDepth="5" 
-                                              Color="Aqua"/>
-                            </Border.Effect>
                         </Border>
 
                         <Border Grid.Row="1" 
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
+                                Opacity="0.7"
                             BorderBrush="{StaticResource txt_gr}" 
+                                Background="#FF1A1A1A"
                             HorizontalAlignment="Center" 
                             Width="330">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" 
-                                              ShadowDepth="5" 
-                                              Color="Aqua"/>
-                            </Border.Effect>
                         </Border>
 
                         <StackPanel Grid.Row="0" 
@@ -429,7 +402,7 @@
                             Width="330" 
                             Foreground="Black" 
                             Background="{StaticResource txt_gr}" 
-                            Opacity="0.7" Style="{StaticResource LoginBtn}" 
+                            Style="{StaticResource LoginBtn}" 
                             Content="Create Account" 
                             FontFamily="Consolas" 
                             FontWeight="ExtraBold" 
@@ -477,15 +450,19 @@
 
                     <Grid x:Name="createAccount_masterkeyForm" IsEnabled="False" Visibility="Collapsed">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="70"/>
+                            <RowDefinition Height="90"/>
                             <RowDefinition Height="55"/>
                             <RowDefinition Height="70"/>
-                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="0"/>
                         </Grid.RowDefinitions>
- 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0">
-                            <TextBlock Foreground="DarkGray" HorizontalAlignment="Center" TextAlignment="Center" Margin="20,0,20,0">
-                                <Run>Please enter a master password for your personal vault. Minimum Length of 10 characters.</Run><LineBreak/>
+
+                        <Border Background="#FF1A1A1A" Opacity="0.55" CornerRadius="15" Margin="10">
+                            
+                        </Border>
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Center">
+                            <TextBlock Foreground="{StaticResource txt_gr}" FontWeight="DemiBold" HorizontalAlignment="Center" TextAlignment="center" Margin="20,0,20,5">
+                                <Run>Please choose a master password with a minimum Length of 10 characters.</Run><LineBreak/>
                                 <Run>The password must consist of both upper and lower case letters [Aa-Zz],</Run><LineBreak/>
                                 <Run>at least one digit character [0-9], and one symbol character [$@|^#?+].</Run>
                             </TextBlock>
@@ -495,15 +472,11 @@
                             CornerRadius="10" 
                             Margin="0,8,0,8" 
                             BorderThickness="1" 
+                                Opacity="0.7"
                             BorderBrush="{StaticResource txt_gr}" 
+                                Background="#FF1A1A1A"
                             HorizontalAlignment="Center" 
                             Width="330">
-
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" 
-                                              ShadowDepth="5" 
-                                              Color="Aqua"/>
-                            </Border.Effect>
                         </Border>
 
                         <StackPanel Grid.Row="1" 

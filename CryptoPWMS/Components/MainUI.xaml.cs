@@ -3,9 +3,7 @@ using CryptoPWMS.IO;
 using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 

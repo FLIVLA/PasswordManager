@@ -3,6 +3,12 @@ using System.Windows.Controls;
 
 namespace CryptoPWMS.Components.ModalChildControls
 {
+    /*
+     *  !!!!!!!!
+     *  NOT USED!
+     *  !!!!!!!!
+     */
+
     /// <summary>
     /// Interaction logic for UnlockForm.xaml
     /// </summary>
@@ -11,10 +17,6 @@ namespace CryptoPWMS.Components.ModalChildControls
         public Window Parent { get; set; }                          // The parent modal hosting the form instance. Set to enable closing the modal instance from the control.
         private PasswordContainer passwordContainer { get; set; }   // Pointer to the password of which the unlock is attempted.
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pwc"></param>
         public UnlockForm(PasswordContainer pwc)
         {
             passwordContainer = pwc;
@@ -30,9 +32,9 @@ namespace CryptoPWMS.Components.ModalChildControls
         /// <param name="e"></param>
         private void btn_unlock_Click(object sender, RoutedEventArgs e)
         {
-            passwordContainer.Unlock();
-            App.MainWin.blurGrid.Visibility = Visibility.Collapsed;     // Collapse blurgrid of main UI
-            Parent.Close();                                             // closes the modal.
+            //passwordContainer.Unlock(pwbx_MasterKey.Password);
+            //App.MainWin.blurGrid.Visibility = Visibility.Collapsed;     // Collapse blurgrid of main UI
+            //Parent.Close();                                             // closes the modal.
         }
 
         /// <summary>

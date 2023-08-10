@@ -105,7 +105,6 @@ namespace CryptoPWMS.Components
         }
 
         #endregion
-
         #region ========================== EXPANDABLE SECTION ==========================
 
         /// <summary>
@@ -249,6 +248,8 @@ namespace CryptoPWMS.Components
                 txt_username.Text = string.Empty;
                 pwbx_password.Password = string.Empty;
                 txt_password.Text = string.Empty;
+
+                Clipboard.Clear();
             }
         }
 

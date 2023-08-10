@@ -9,8 +9,6 @@ using System.Windows;
 using CryptoPWMS.Security;
 using System.Text;
 using System.Security.Cryptography;
-using System.Security.Cryptography.Xml;
-using System.Security.Policy;
 
 namespace CryptoPWMS.IO
 {

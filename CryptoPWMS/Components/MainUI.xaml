@@ -110,14 +110,6 @@
                 <TextBlock x:Name="txt_Generatedpw" FontSize="20"  FontFamily="Consolas" Foreground="{StaticResource txt_gr}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Margin="23,0,0,20" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                <Image Source="pack://application:,,,/img/shield.png" Height="23" Margin="0,0,15,0"></Image>
-                <Border Height="10" Width="150" CornerRadius="5" Background="#FF4D4D4D">
-                    <Border Margin="2" Background="{StaticResource txt_gr}" CornerRadius="3" HorizontalAlignment="Left" Width="100"></Border>
-                </Border>
-                <TextBlock x:Name="txt_pwStrength" Foreground="{StaticResource txt_gr}" VerticalAlignment="Center" Margin="15,0,0,0" FontWeight="Bold">Strong</TextBlock>
-            </StackPanel>
-
             <StackPanel Orientation="Horizontal" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,15,15">
                 <Button x:Name="btn_Refresh_rndpw" Height="35" Width="35" Style="{StaticResource transparent_brd}" Click="btn_Refresh_rndpw_Click">
                     <Button.ToolTip>

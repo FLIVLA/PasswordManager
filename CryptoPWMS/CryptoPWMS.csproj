@@ -13,6 +13,7 @@
     <None Remove="img\add_solid.png" />
     <None Remove="img\app.png" />
     <None Remove="img\bin.png" />
+    <None Remove="img\binary.png" />
     <None Remove="img\copy.png" />
     <None Remove="img\db.png" />
     <None Remove="img\edit.png" />
@@ -59,6 +60,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\bin.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="img\binary.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="img\copy.png">

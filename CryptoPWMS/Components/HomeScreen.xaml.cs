@@ -1,7 +1,6 @@
 ﻿using CryptoPWMS.IO;
 using CryptoPWMS.Security;
 using CryptoPWMS.Utils;
-using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -18,14 +17,9 @@ namespace CryptoPWMS.Components
         public HomeScreen()
         {
             InitializeComponent();
-            title_L.Text = TextTags.AppTitle();
+            //title_L.Text = TextTags.AppTitle();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btn_Login_Click(object sender, RoutedEventArgs e)
         {
             string username = txt_username.Text;
@@ -43,7 +37,9 @@ namespace CryptoPWMS.Components
         }
 
         /// <summary>
-        /// 
+        /// Attempts decryption of the user's vault (temporary copy of encrypted vaults file).
+        /// If Successfully decrypted, the Main UI will read and display any data contained
+        /// in the decrypted vault file, and navigate to the the password library.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -108,7 +104,8 @@ namespace CryptoPWMS.Components
         }
 
         /// <summary>
-        /// 
+        /// Encrypts the vault with entered master key, and navigates back to
+        /// the login page.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
