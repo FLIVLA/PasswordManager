@@ -17,7 +17,6 @@ namespace CryptoPWMS.Components
         public HomeScreen()
         {
             InitializeComponent();
-            //title_L.Text = TextTags.AppTitle();
         }
 
         private void btn_Login_Click(object sender, RoutedEventArgs e)
